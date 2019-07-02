@@ -1,0 +1,24 @@
+# MacOS
+*.DS_Store
+
+# IDEA Ignores
+*.iml
+*.ipr
+*.iws
+.idea/
+local.properties
+captures
+
+# Gradle build folders
+build/
+.gradle/*
+.gradletasknamecache
+
+# Generic Android Ignores
+/*/bin
+*/gen
+bin
+gen/
+target
+*.apk
+android-common.jar

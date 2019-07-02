@@ -1,0 +1,4 @@
+rootProject.name = 'MultiplatformOphan'
+
+
+enableFeaturePreview('GRADLE_METADATA')
