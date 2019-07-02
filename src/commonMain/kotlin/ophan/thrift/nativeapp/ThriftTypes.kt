@@ -379,6 +379,7 @@ data class Event(
     @JvmField @ThriftField(fieldId = 3, isOptional = true) val eventType: EventType? = ophan.thrift.nativeapp.EventType.VIEW,
     @JvmField @ThriftField(fieldId = 1, isRequired = true) val eventId: String,
     @JvmField @ThriftField(fieldId = 9, isOptional = true) val viewId: String?,
+    @JvmField @ThriftField(fieldId = 22, isOptional = true) val ageMsLong: Long?,
     @JvmField @ThriftField(fieldId = 2, isOptional = true) val ageMs: Int? = 0,
     @JvmField @ThriftField(fieldId = 4, isOptional = true) val path: String?,
     @JvmField @ThriftField(fieldId = 5, isOptional = true) val previousPath: String?,
@@ -408,6 +409,8 @@ data class Event(
         private var eventId: String? = null
 
         private var viewId: String? = null
+
+        private var ageMsLong: Long? = null
 
         private var ageMs: Int? = 0
 
@@ -449,6 +452,7 @@ data class Event(
             this.eventType = ophan.thrift.nativeapp.EventType.VIEW
             this.eventId = null
             this.viewId = null
+            this.ageMsLong = null
             this.ageMs = 0
             this.path = null
             this.previousPath = null
@@ -473,6 +477,7 @@ data class Event(
             this.eventType = source.eventType
             this.eventId = source.eventId
             this.viewId = source.viewId
+            this.ageMsLong = source.ageMsLong
             this.ageMs = source.ageMs
             this.path = source.path
             this.previousPath = source.previousPath
@@ -498,6 +503,8 @@ data class Event(
         fun eventId(eventId: String) = apply { this.eventId = eventId }
 
         fun viewId(viewId: String?) = apply { this.viewId = viewId }
+
+        fun ageMsLong(ageMsLong: Long?) = apply { this.ageMsLong = ageMsLong }
 
         fun ageMs(ageMs: Int?) = apply { this.ageMs = ageMs }
 
@@ -537,8 +544,9 @@ data class Event(
 
         override fun build(): Event = Event(eventType = this.eventType,
                 eventId = checkNotNull(eventId) { "Required field 'eventId' is missing" },
-                viewId = this.viewId, ageMs = this.ageMs, path = this.path,
-                previousPath = this.previousPath, referringSource = this.referringSource,
+                viewId = this.viewId, ageMsLong = this.ageMsLong, ageMs = this.ageMs,
+                path = this.path, previousPath = this.previousPath,
+                referringSource = this.referringSource,
                 pushNotificationId = this.pushNotificationId, adLoad = this.adLoad,
                 benchmark = this.benchmark, networkOperation = this.networkOperation,
                 attentionMs = this.attentionMs, scrollDepth = this.scrollDepth, media = this.media,
@@ -549,6 +557,7 @@ data class Event(
             this.eventType = ophan.thrift.nativeapp.EventType.VIEW
             this.eventId = null
             this.viewId = null
+            this.ageMsLong = null
             this.ageMs = 0
             this.path = null
             this.previousPath = null
@@ -603,6 +612,14 @@ data class Event(
                         if (fieldMeta.typeId == TType.STRING) {
                             val viewId = protocol.readString()
                             builder.viewId(viewId)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    22 -> {
+                        if (fieldMeta.typeId == TType.I64) {
+                            val ageMsLong = protocol.readI64()
+                            builder.ageMsLong(ageMsLong)
                         } else {
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
@@ -780,6 +797,11 @@ data class Event(
             if (struct.viewId != null) {
                 protocol.writeFieldBegin("viewId", 9, TType.STRING)
                 protocol.writeString(struct.viewId)
+                protocol.writeFieldEnd()
+            }
+            if (struct.ageMsLong != null) {
+                protocol.writeFieldBegin("ageMsLong", 22, TType.I64)
+                protocol.writeI64(struct.ageMsLong)
                 protocol.writeFieldEnd()
             }
             if (struct.ageMs != null) {

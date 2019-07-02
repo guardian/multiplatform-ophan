@@ -4,6 +4,7 @@ plugins {
 }
 repositories {
     mavenCentral()
+    jcenter()
 }
 group 'com.example'
 version '0.0.1'
@@ -42,7 +43,7 @@ kotlin {
                 implementation kotlin('stdlib-common')
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.2"
                 implementation "io.ktor:ktor-client-core:1.2.2"
-
+                implementation "com.soywiz.korlibs.klock:klock:1.5.0"
             }
         }
         commonTest {

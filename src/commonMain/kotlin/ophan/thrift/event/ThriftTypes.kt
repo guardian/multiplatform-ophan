@@ -176,7 +176,11 @@ enum class Platform(@JvmField val value: Int) {
 
     SUPPORT(16),
 
-    SUBSCRIBE(17);
+    SUBSCRIBE(17),
+
+    MANAGE_MY_ACCOUNT(18),
+
+    SMART_NEWS(19);
 
     companion object {
         @JvmStatic
@@ -199,6 +203,8 @@ enum class Platform(@JvmField val value: Int) {
             15 -> SCRIBD
             16 -> SUPPORT
             17 -> SUBSCRIBE
+            18 -> MANAGE_MY_ACCOUNT
+            19 -> SMART_NEWS
             else -> null
         }
     }
@@ -1875,7 +1881,9 @@ data class Acquisition(
     @JvmField @ThriftField(fieldId = 20, isOptional = true) val discountLengthInMonths: Short?,
     @JvmField @ThriftField(fieldId = 21, isOptional = true) val discountPercentage: Double?,
     @JvmField @ThriftField(fieldId = 22, isOptional = true) val promoCode: String?,
-    @JvmField @ThriftField(fieldId = 23, isOptional = true) val labels: Set<String>?
+    @JvmField @ThriftField(fieldId = 23, isOptional = true) val labels: Set<String>?,
+    @JvmField @ThriftField(fieldId = 24, isOptional = true) val identityId: String?,
+    @JvmField @ThriftField(fieldId = 25, isOptional = true) val queryParameters: Set<QueryParameter>?
 ) : Struct {
     override fun write(protocol: Protocol) {
         ADAPTER.write(protocol, this)
@@ -1920,6 +1928,10 @@ data class Acquisition(
 
         private var labels: Set<String>? = null
 
+        private var identityId: String? = null
+
+        private var queryParameters: Set<QueryParameter>? = null
+
         constructor() {
             this.product = null
             this.paymentFrequency = null
@@ -1940,6 +1952,8 @@ data class Acquisition(
             this.discountPercentage = null
             this.promoCode = null
             this.labels = null
+            this.identityId = null
+            this.queryParameters = null
         }
 
         constructor(source: Acquisition) {
@@ -1962,6 +1976,8 @@ data class Acquisition(
             this.discountPercentage = source.discountPercentage
             this.promoCode = source.promoCode
             this.labels = source.labels
+            this.identityId = source.identityId
+            this.queryParameters = source.queryParameters
         }
 
         fun product(product: Product) = apply { this.product = product }
@@ -2002,6 +2018,10 @@ data class Acquisition(
 
         fun labels(labels: Set<String>?) = apply { this.labels = labels }
 
+        fun identityId(identityId: String?) = apply { this.identityId = identityId }
+
+        fun queryParameters(queryParameters: Set<QueryParameter>?) = apply { this.queryParameters = queryParameters }
+
         override fun build(): Acquisition = Acquisition(product = checkNotNull(product) { "Required field 'product' is missing" },
                 paymentFrequency = checkNotNull(paymentFrequency) { "Required field 'paymentFrequency' is missing" },
                 currency = checkNotNull(currency) { "Required field 'currency' is missing" },
@@ -2013,7 +2033,8 @@ data class Acquisition(
                 source = this.source, printOptions = this.printOptions, platform = this.platform,
                 discountLengthInMonths = this.discountLengthInMonths,
                 discountPercentage = this.discountPercentage, promoCode = this.promoCode,
-                labels = this.labels)
+                labels = this.labels, identityId = this.identityId,
+                queryParameters = this.queryParameters)
         override fun reset() {
             this.product = null
             this.paymentFrequency = null
@@ -2034,6 +2055,8 @@ data class Acquisition(
             this.discountPercentage = null
             this.promoCode = null
             this.labels = null
+            this.identityId = null
+            this.queryParameters = null
         }
     }
 
@@ -2224,6 +2247,28 @@ data class Acquisition(
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
                     }
+                    24 -> {
+                        if (fieldMeta.typeId == TType.STRING) {
+                            val identityId = protocol.readString()
+                            builder.identityId(identityId)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    25 -> {
+                        if (fieldMeta.typeId == TType.SET) {
+                            val set0 = protocol.readSetBegin()
+                            val queryParameters = LinkedHashSet<QueryParameter>(set0.size)
+                            for (i0 in 0 until set0.size) {
+                                val item0 = QueryParameter.ADAPTER.read(protocol)
+                                queryParameters += item0
+                            }
+                            protocol.readSetEnd()
+                            builder.queryParameters(queryParameters)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
                     else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
                 }
                 protocol.readFieldEnd()
@@ -2329,6 +2374,20 @@ data class Acquisition(
                 protocol.writeSetEnd()
                 protocol.writeFieldEnd()
             }
+            if (struct.identityId != null) {
+                protocol.writeFieldBegin("identityId", 24, TType.STRING)
+                protocol.writeString(struct.identityId)
+                protocol.writeFieldEnd()
+            }
+            if (struct.queryParameters != null) {
+                protocol.writeFieldBegin("queryParameters", 25, TType.SET)
+                protocol.writeSetBegin(TType.STRUCT, struct.queryParameters.size)
+                for (item0 in struct.queryParameters) {
+                    QueryParameter.ADAPTER.write(protocol, item0)
+                }
+                protocol.writeSetEnd()
+                protocol.writeFieldEnd()
+            }
             protocol.writeFieldStop()
             protocol.writeStructEnd()
         }
@@ -2428,5 +2487,94 @@ data class PrintOptions(@JvmField @ThriftField(fieldId = 1, isRequired = true) v
     companion object {
         @JvmField
         val ADAPTER: Adapter<PrintOptions, Builder> = PrintOptionsAdapter()
+    }
+}
+
+/**
+ * A query string parameter
+ */
+data class QueryParameter(@JvmField @ThriftField(fieldId = 1, isRequired = true) val name: String, @JvmField @ThriftField(fieldId = 2, isRequired = true) val value: String) : Struct {
+    override fun write(protocol: Protocol) {
+        ADAPTER.write(protocol, this)
+    }
+
+    class Builder : StructBuilder<QueryParameter> {
+        private var name: String? = null
+
+        private var value: String? = null
+
+        constructor() {
+            this.name = null
+            this.value = null
+        }
+
+        constructor(source: QueryParameter) {
+            this.name = source.name
+            this.value = source.value
+        }
+
+        fun name(name: String) = apply { this.name = name }
+
+        fun value(value: String) = apply { this.value = value }
+
+        override fun build(): QueryParameter = QueryParameter(name = checkNotNull(name) { "Required field 'name' is missing" },
+                value = checkNotNull(value) { "Required field 'value' is missing" })
+        override fun reset() {
+            this.name = null
+            this.value = null
+        }
+    }
+
+    private class QueryParameterAdapter : Adapter<QueryParameter, Builder> {
+        override fun read(protocol: Protocol) = read(protocol, Builder())
+
+        override fun read(protocol: Protocol, builder: Builder): QueryParameter {
+            protocol.readStructBegin()
+            while (true) {
+                val fieldMeta = protocol.readFieldBegin()
+                if (fieldMeta.typeId == TType.STOP) {
+                    break
+                }
+                when (fieldMeta.fieldId.toInt()) {
+                    1 -> {
+                        if (fieldMeta.typeId == TType.STRING) {
+                            val name = protocol.readString()
+                            builder.name(name)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    2 -> {
+                        if (fieldMeta.typeId == TType.STRING) {
+                            val value = protocol.readString()
+                            builder.value(value)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                }
+                protocol.readFieldEnd()
+            }
+            protocol.readStructEnd()
+            return builder.build()
+        }
+
+        override fun write(protocol: Protocol, struct: QueryParameter) {
+            protocol.writeStructBegin("QueryParameter")
+            protocol.writeFieldBegin("name", 1, TType.STRING)
+            protocol.writeString(struct.name)
+            protocol.writeFieldEnd()
+            protocol.writeFieldBegin("value", 2, TType.STRING)
+            protocol.writeString(struct.value)
+            protocol.writeFieldEnd()
+            protocol.writeFieldStop()
+            protocol.writeStructEnd()
+        }
+    }
+
+    companion object {
+        @JvmField
+        val ADAPTER: Adapter<QueryParameter, Builder> = QueryParameterAdapter()
     }
 }

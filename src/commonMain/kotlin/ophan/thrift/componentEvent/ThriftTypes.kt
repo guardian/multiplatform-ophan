@@ -133,7 +133,33 @@ enum class ComponentType(@JvmField val value: Int) {
 
     ACQUISITIONS_BUTTON(19),
 
-    ACQUISITIONS_OTHER(20);
+    ACQUISITIONS_OTHER(20),
+
+    APP_ADVERT(21),
+
+    APP_AUDIO(22),
+
+    APP_BUTTON(23),
+
+    APP_CARD(24),
+
+    APP_CROSSWORDS(25),
+
+    APP_ENGAGEMENT_BANNER(26),
+
+    APP_EPIC(27),
+
+    APP_GALLERY(28),
+
+    APP_LINK(29),
+
+    APP_NAVIGATION_ITEM(30),
+
+    APP_SCREEN(31),
+
+    APP_THRASHER(32),
+
+    APP_VIDEO(33);
 
     companion object {
         @JvmStatic
@@ -158,6 +184,19 @@ enum class ComponentType(@JvmField val value: Int) {
             18 -> ACQUISITIONS_MANAGE_MY_ACCOUNT
             19 -> ACQUISITIONS_BUTTON
             20 -> ACQUISITIONS_OTHER
+            21 -> APP_ADVERT
+            22 -> APP_AUDIO
+            23 -> APP_BUTTON
+            24 -> APP_CARD
+            25 -> APP_CROSSWORDS
+            26 -> APP_ENGAGEMENT_BANNER
+            27 -> APP_EPIC
+            28 -> APP_GALLERY
+            29 -> APP_LINK
+            30 -> APP_NAVIGATION_ITEM
+            31 -> APP_SCREEN
+            32 -> APP_THRASHER
+            33 -> APP_VIDEO
             else -> null
         }
     }
