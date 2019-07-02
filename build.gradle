@@ -105,6 +105,20 @@ task iosTest {
 }
 */
 
+task generateThriftModels(type: Exec) {
+    executable 'java'
+    args = [
+            '-jar', 'thrifty-compiler.jar',
+            '--lang', 'kotlin',
+            '--omit-generated-annotations',
+            '--list-type=kotlin.collections.ArrayList',
+            '--set-type=kotlin.collections.LinkedHashSet',
+            '--out', 'src/commonMain/kotlin',
+            '--path', '../android-news-app/ophan/event-model/src/main/thrift/',
+            '../android-news-app/ophan/event-model/src/main/thrift/nativeapp.thrift'
+    ]
+}
+
 configurations {
     compileClasspath
 }
