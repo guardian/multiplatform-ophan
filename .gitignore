@@ -22,3 +22,6 @@ gen/
 target
 *.apk
 android-common.jar
+
+# Project
+bintray.properties
