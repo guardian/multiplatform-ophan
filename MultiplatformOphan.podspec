@@ -2,7 +2,7 @@ Pod::Spec.new do |spec|
     spec.name                     = 'MultiplatformOphan'
     spec.version                  = '0.0.2'
     spec.homepage                 = 'https://github.com/guardian/multiplatform-ophan'
-    spec.source                   = { :git => "Not Published", :tag => "Cocoapods/#{spec.name}/#{spec.version}" }
+    spec.source                   = { :git => 'https://github.com/guardian/multiplatform-ophan.git', :tag => "v#{spec.version}" }
     spec.authors                  = ''
     spec.license                  = ''
     spec.summary                  = 'A multiplatform client library for Ophan'
