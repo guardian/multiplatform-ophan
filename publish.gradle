@@ -15,10 +15,6 @@ bintray {
             'kotlinMultiplatform',
             'metadata'
     ]
-    filesSpec {
-        from zipIosFramework
-        into 'pods'
-    }
     pkg {
         repo = 'kotlin'
         name = 'multiplatform-ophan'

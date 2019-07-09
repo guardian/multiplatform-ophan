@@ -125,6 +125,10 @@ task zipIosFramework(type: Zip) {
     from "LICENSE.md"
 }
 
+publishing.publications.ios {
+    artifact zipIosFramework
+}
+
 configurations {
     compileClasspath
 }

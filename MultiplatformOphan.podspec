@@ -2,7 +2,7 @@ Pod::Spec.new do |spec|
     spec.name                     = 'MultiplatformOphan'
     spec.version                  = '0.0.3'
     spec.homepage                 = 'https://github.com/guardian/multiplatform-ophan'
-    spec.source                   = { :http => "https://github.com/guardian/multiplatform-ophan/releases/download/v#{spec.version}/MultiplatformOphan.framework.zip" }
+    spec.source                   = { :http => "https://bintray.com/api/ui/download/guardian/kotlin/com/gu/kotlin/multiplatform-ophan-ios/#{spec.version}/multiplatform-ophan-ios-#{spec.version}.klib" }
     spec.authors                  = 'Max Spencer'
     spec.summary                  = 'A multiplatform client library for Ophan'
     spec.static_framework         = true
