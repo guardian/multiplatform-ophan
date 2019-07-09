@@ -119,6 +119,12 @@ task generateThriftModels(type: Exec) {
     ]
 }
 
+task zipIosFramework(type: Zip) {
+    archiveFileName = "MultiplatformOphan-iOS.zip"
+    from linkDebugFrameworkIos
+    from "LICENSE.md"
+}
+
 configurations {
     compileClasspath
 }

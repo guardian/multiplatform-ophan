@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'MultiplatformOphan'
-    spec.version                  = '0.0.2'
+    spec.version                  = '0.0.3'
     spec.homepage                 = 'https://github.com/guardian/multiplatform-ophan'
     spec.source                   = { :http => "https://github.com/guardian/multiplatform-ophan/releases/download/v#{spec.version}/MultiplatformOphan.framework.zip" }
     spec.authors                  = 'Max Spencer'
