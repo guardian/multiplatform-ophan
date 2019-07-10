@@ -40,6 +40,8 @@ Add the `MultiplatformOphan` pod to your Podfile:
     target 'Example' do
       pod 'MultiplatformOphan'
     end
+    
+Here is [an example](https://github.com/guardian/ios-live/commit/465d98846b37a3d2943d6c516d42c6b296e3fb7e) of this applied to the Guardian's iOS app.
 
 ### Multiplatform
 
