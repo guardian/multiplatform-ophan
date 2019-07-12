@@ -1,31 +1,31 @@
-group 'com.gu.kotlin'
-version '0.0.4'
+group "com.gu.kotlin"
+version "0.0.4"
 
 Properties bintrayProperties = new Properties()
 try {
-    bintrayProperties.load(project.file('bintray.properties').newDataInputStream())
+    bintrayProperties.load(project.file("bintray.properties").newDataInputStream())
 } catch (FileNotFoundException ignored) {}
 
 bintray {
-    user = bintrayProperties.getProperty('user')
-    key = bintrayProperties.getProperty('key')
+    user = bintrayProperties.getProperty("user")
+    key = bintrayProperties.getProperty("key")
     publications = [
-            'ios',
-            'jvm',
-            'kotlinMultiplatform',
-            'metadata'
+            "ios",
+            "jvm",
+            "kotlinMultiplatform",
+            "metadata"
     ]
     pkg {
-        repo = 'kotlin'
-        name = 'multiplatform-ophan'
-        userOrg = 'guardian'
-        licenses = ['MIT']
-        vcsUrl = 'https://github.com/guardian/multiplatform-ophan.git'
+        repo = "kotlin"
+        name = "multiplatform-ophan"
+        userOrg = "guardian"
+        licenses = ["MIT"]
+        vcsUrl = "https://github.com/guardian/multiplatform-ophan.git"
         version {
-            name = '0.0.4'
-            desc = 'Multiplatform Ophan 0.0.4'
+            name = "0.0.4"
+            desc = "Multiplatform Ophan 0.0.4"
             released = new Date()
-            vcsTag = 'v0.0.4'
+            vcsTag = "v0.0.4"
         }
     }
 }
