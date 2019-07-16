@@ -69,14 +69,17 @@ kotlin {
         }
     }
 
-    val zipIosTask = tasks.create<Zip>("zipIosFramework") {
+    val linkDebugFrameworkIos by tasks.getting
+
+    val zipIosFramework by tasks.creating(Zip::class) {
+        dependsOn(linkDebugFrameworkIos)
         archiveName = "MultiplatformOphan-iOS.zip"
         from(ios64.binaries.getFramework("debug").outputDirectory)
         from("LICENSE.md")
     }
 
     publishing.publications.named<MavenPublication>("ios") {
-        artifact(zipIosTask)
+        artifact(zipIosFramework)
     }
 }
 

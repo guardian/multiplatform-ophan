@@ -4,7 +4,7 @@ A Kotlin Multiplatform client library for Ophan. Available for Android, iOS, and
 
 ## Adding as a dependency
 
-The most recent version is `0.0.5`
+The most recent version is `0.0.6`
 
 ### Android
 
@@ -79,4 +79,4 @@ _Important note: This will only work if you have appropriate Bintray credentials
 2. Make a commit and tag it with `git tag -a v<version> -m "<message>"`
 3. Upload to Bintray with `./gradlew bintrayUpload`
 4. Publish in the Bintray web UI.
-5. Publish the Podspec with update version number with `pod repo push <repo name> MultiplatformOphan.podspec`
+5. Publish the Podspec with updated version number with `pod repo push <repo name> MultiplatformOphan.podspec`
