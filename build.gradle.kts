@@ -14,7 +14,7 @@ kotlin {
 
     // This is for iPhone emulator
     // Switch here to iosArm64 (or iosArm32) to build library for iPhone device
-    iosX64("ios") {
+    val ios64 = iosX64("ios") {
         binaries {
             framework {
                 baseName = "MultiplatformOphan"
@@ -22,7 +22,7 @@ kotlin {
         }
     }
 
-    iosArm64("iosArm64") {
+    val iosArm64 = iosArm64("iosArm64") {
         binaries {
             framework {
                 baseName = "MultiplatformOphan"
@@ -31,7 +31,7 @@ kotlin {
     }
 
     sourceSets {
-        commonMain {
+        named("commonMain") {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.2")
@@ -39,42 +39,50 @@ kotlin {
                 implementation("com.soywiz.korlibs.klock:klock:1.5.0")
             }
         }
-        commonTest {
+        named("commonTest") {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
             }
         }
-        jvmMain {
+        named("jvmMain") {
             dependencies {
                 implementation(kotlin("stdlib"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.2")
                 implementation("io.ktor:ktor-client-android:1.2.2")
             }
         }
-        jvmTest {
+        named("jvmTest") {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
             }
         }
-        iosMain {
+        val iosMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.2")
                 implementation("io.ktor:ktor-client-ios:1.2.2")
             }
         }
-        iosTest {
-        }
-        iosArm64Main {
+        val iosArm64Main by getting {
             dependsOn(iosMain)
         }
     }
+
+    val zipIosTask = tasks.create<Zip>("zipIosFramework") {
+        archiveName = "MultiplatformOphan-iOS.zip"
+        from(ios64.binaries.getFramework("debug").outputDirectory)
+        from("LICENSE.md")
+    }
+
+    publishing.publications.named<MavenPublication>("ios") {
+        artifact(zipIosTask)
+    }
 }
 
-task generateThriftModels(type: Exec) {
+tasks.register<Exec>("generateThriftModels") {
     executable = "java"
-    args = [
+    args(
             "-jar", "thrifty-compiler.jar",
             "--lang", "kotlin",
             "--omit-generated-annotations",
@@ -83,22 +91,7 @@ task generateThriftModels(type: Exec) {
             "--out", "src/commonMain/kotlin",
             "--path", "../android-news-app/ophan/event-model/src/main/thrift/",
             "../android-news-app/ophan/event-model/src/main/thrift/nativeapp.thrift"
-    ]
+    )
 }
 
-task zipIosFramework(type: Zip) {
-    archiveFileName = "MultiplatformOphan-iOS.zip"
-    from(linkDebugFrameworkIos)
-    from("LICENSE.md")
-}
-
-publishing.publications.ios {
-    artifact(zipIosFramework)
-}
-
-configurations {
-    compileClasspath
-}
-
-apply from: "publish.gradle"
-//apply(from = "publish.gradle")
+apply(from = "publish.gradle")
