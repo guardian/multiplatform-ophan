@@ -126,8 +126,3 @@ class OphanDispatcher(
     }
 }
 
-interface RecordStore {
-    fun putRecord(key: String, record: ByteArray)
-    fun getRecords(): List<ByteArray>
-    fun removeRecord(key: String)
-}
