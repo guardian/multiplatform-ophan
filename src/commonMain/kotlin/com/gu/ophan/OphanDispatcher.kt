@@ -36,6 +36,7 @@ class OphanDispatcher(
         private val device: Device,
         private val deviceId: String,
         private val userId: String,
+        private val coroutineContext: CoroutineContext,
         private val recordStore: RecordStore,
         private val logger: Logger
 ) {
@@ -43,14 +44,18 @@ class OphanDispatcher(
     private val ophanUrl = "https://ophan.theguardian.com/mob-loopback"
     private val thriftContentType = ContentType("application", "vnd.apache.thrift.compact")
 
-    fun dispatchEvent(context: CoroutineContext, event: Event) {
+    fun dispatchEvent(event: Event) {
+        dispatchEvent(event, coroutineContext)
+    }
+
+    fun dispatchEvent(event: Event, context: CoroutineContext) {
         CoroutineScope(context).launch {
             logger.debug("OphanDispatcher", "Event B")
-            dispatchEvent(event)
+            storeAndSendEvent(event)
         }
     }
 
-    private suspend fun dispatchEvent(event: Event) {
+    private suspend fun storeAndSendEvent(event: Event) {
         val now = DateTime.now()
         val record = buildPacket {
             writeLong(now.unixMillisLong)
