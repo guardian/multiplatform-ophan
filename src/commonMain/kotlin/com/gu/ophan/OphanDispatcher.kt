@@ -40,6 +40,10 @@ class OphanDispatcher(
         private val recordStore: RecordStore,
         private val logger: Logger
 ) {
+
+    constructor(app: App, device: Device, deviceId: String, userId: String, recordStore: RecordStore, logger: Logger) :
+            this(app, device, deviceId, userId, DefaultCoroutineContext, recordStore, logger)
+
     private val httpClient = HttpClient()
     private val ophanUrl = "https://ophan.theguardian.com/mob-loopback"
     private val thriftContentType = ContentType("application", "vnd.apache.thrift.compact")

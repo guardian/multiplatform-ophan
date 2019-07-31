@@ -1,8 +1,10 @@
-package sample
+package com.gu.ophan
 
 import kotlinx.coroutines.*
 import platform.darwin.*
 import kotlin.coroutines.*
+
+actual val DefaultCoroutineContext: CoroutineContext = MainQueueDispatcher()
 
 class MainQueueDispatcher : CoroutineDispatcher() {
     override fun dispatch(context: CoroutineContext, block: Runnable) {
