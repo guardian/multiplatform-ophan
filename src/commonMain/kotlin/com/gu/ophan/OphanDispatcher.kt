@@ -41,8 +41,8 @@ class OphanDispatcher(
         private val logger: Logger?
 ) {
 
-    constructor(app: App, device: Device, deviceId: String, userId: String, recordStore: RecordStore) :
-            this(app, device, deviceId, userId, DefaultCoroutineContext, recordStore, null)
+    constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?) :
+            this(app, device, deviceId, userId, DefaultCoroutineContext, InMemoryRecordStore(), logger)
 
     private val httpClient = HttpClient()
     private val ophanUrl = "https://ophan.theguardian.com/mob-loopback"
@@ -133,10 +133,4 @@ class OphanDispatcher(
             packet.readAvailable(this)
         }
     }
-}
-
-interface RecordStore {
-    fun putRecord(key: String, record: ByteArray)
-    fun getRecords(): List<ByteArray>
-    fun removeRecord(key: String)
 }
