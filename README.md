@@ -4,7 +4,7 @@ A Kotlin Multiplatform client library for Ophan. Available for Android, iOS, and
 
 ## Adding as a dependency
 
-The most recent version is `0.0.9`
+The most recent version is `0.0.10`
 
 ### Android
 

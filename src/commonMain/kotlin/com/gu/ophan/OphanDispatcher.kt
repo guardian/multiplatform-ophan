@@ -123,8 +123,8 @@ class OphanDispatcher(
                 body = ByteArrayContent(toBytes(submission), thriftContentType)
             }
         }
-        logger?.debug("OphanDispatcher","It worked!")
         logger?.debug("OphanDispatcher", response.readText())
+        logger?.debug("OphanDispatcher","It worked, the current version is 0.0.10")
         return response
     }
 
