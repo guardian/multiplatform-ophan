@@ -48,7 +48,6 @@ class OphanDispatcher(
         logger?.debug("OphanDispatcher", "Ophan dispatcher created")
     }
 
-    private val httpClient = HttpClient()
     private val ophanUrl = "https://ophan.theguardian.com/mob-loopback"
     private val thriftContentType = ContentType("application", "vnd.apache.thrift.compact")
 
@@ -119,7 +118,7 @@ class OphanDispatcher(
     }
 
     private suspend fun sendSubmission(submission: NativeAppSubmission): HttpResponse {
-        val response = httpClient.use { client ->
+        val response = HttpClient().use { client ->
             client.post<HttpResponse>(ophanUrl) {
                 body = ByteArrayContent(toBytes(submission), thriftContentType)
             }
