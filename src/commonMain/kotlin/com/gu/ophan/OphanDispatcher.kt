@@ -32,17 +32,20 @@ interface Logger {
 
 @InternalAPI
 class OphanDispatcher(
-        private val app: App,
-        private val device: Device,
-        private val deviceId: String,
-        private val userId: String,
-        private val coroutineContext: CoroutineContext,
-        private val recordStore: RecordStore,
-        private val logger: Logger?
+    private val app: App,
+    private val device: Device,
+    private val deviceId: String,
+    private val userId: String,
+    private val logger: Logger?,
+    private val recordStore: RecordStore,
+    private val coroutineContext: CoroutineContext
 ) {
 
+    constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?, recordStore: RecordStore) :
+            this(app, device, deviceId, userId, logger, recordStore, getDefaultCoroutineContext())
+
     constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?) :
-            this(app, device, deviceId, userId, DefaultCoroutineContextFactory().getCoroutineContext(), InMemoryRecordStore(), logger)
+            this(app, device, deviceId, userId, logger, InMemoryRecordStore())
 
     init {
         logger?.debug("OphanDispatcher", "Ophan dispatcher created")
@@ -124,7 +127,7 @@ class OphanDispatcher(
             }
         }
         logger?.debug("OphanDispatcher", response.readText())
-        logger?.debug("OphanDispatcher","It worked, the current version is 0.0.10")
+        logger?.debug("OphanDispatcher","It worked, the current version is 0.0.11")
         return response
     }
 

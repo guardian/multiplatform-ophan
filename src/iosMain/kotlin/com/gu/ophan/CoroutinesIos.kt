@@ -15,8 +15,6 @@ class MainQueueDispatcher : CoroutineDispatcher() {
     }
 }
 
-actual class DefaultCoroutineContextFactory {
-    actual fun getCoroutineContext(): CoroutineContext {
-        return MainQueueDispatcher()
-    }
+actual fun getDefaultCoroutineContext(): CoroutineContext {
+    return MainQueueDispatcher()
 }
