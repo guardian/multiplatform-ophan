@@ -40,7 +40,6 @@ class OphanDispatcher(
     private val recordStore: RecordStore,
     private val coroutineContext: CoroutineContext
 ) {
-
     constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?, recordStore: RecordStore) :
             this(app, device, deviceId, userId, logger, recordStore, getDefaultCoroutineContext())
 
