@@ -32,25 +32,41 @@ interface Logger {
 
 @InternalAPI
 class OphanDispatcher(
-        private val app: App,
-        private val device: Device,
-        private val deviceId: String,
-        private val userId: String,
-        private val recordStore: RecordStore,
-        private val logger: Logger
+    private val app: App,
+    private val device: Device,
+    private val deviceId: String,
+    private val userId: String,
+    private val logger: Logger?,
+    private val recordStore: RecordStore,
+    private val coroutineContext: CoroutineContext
 ) {
-    private val httpClient = HttpClient()
+    constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?, recordStore: RecordStore) :
+            this(app, device, deviceId, userId, logger, recordStore, getDefaultCoroutineContext())
+
+    constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?) :
+            this(app, device, deviceId, userId, logger, InMemoryRecordStore())
+
+    init {
+        logger?.debug("OphanDispatcher", "Ophan dispatcher created")
+    }
+
     private val ophanUrl = "https://ophan.theguardian.com/mob-loopback"
     private val thriftContentType = ContentType("application", "vnd.apache.thrift.compact")
 
-    fun dispatchEvent(context: CoroutineContext, event: Event) {
+    fun dispatchEvent(event: Event) {
+        logger?.debug("OphanDispatcher", "About to pass coroutineContext...")
+        dispatchEvent(event, coroutineContext)
+    }
+
+    fun dispatchEvent(event: Event, context: CoroutineContext) {
+        logger?.debug("OphanDispatcher", "About to invoke function with coroutineContext...")
         CoroutineScope(context).launch {
-            logger.debug("OphanDispatcher", "Event B")
-            dispatchEvent(event)
+            logger?.debug("OphanDispatcher", "Event B")
+            storeAndSendEvent(event)
         }
     }
 
-    private suspend fun dispatchEvent(event: Event) {
+    private suspend fun storeAndSendEvent(event: Event) {
         val now = DateTime.now()
         val record = buildPacket {
             writeLong(now.unixMillisLong)
@@ -60,7 +76,7 @@ class OphanDispatcher(
         }.readBytes()
         val key = event.eventId
         recordStore.putRecord(key, record)
-        logger.debug("OphanDispatcher", "putRecord($key, ${record.encodeBase64()})")
+        logger?.debug("OphanDispatcher", "putRecord($key, ${record.encodeBase64()})")
         sendEvents()
     }
 
@@ -76,15 +92,15 @@ class OphanDispatcher(
                         val protocol = CompactProtocol(transport)
                         val e = Event.ADAPTER.read(protocol)
                         val ageMillis = nowMillis - millisWhenStored
-                        logger.debug("OphanDispatcher", "ageMsLong=$ageMillis")
+                        logger?.debug("OphanDispatcher", "ageMsLong=$ageMillis")
                         e.copy(ageMsLong = ageMillis)
                     } catch (e: Throwable) {
-                        logger.warn("OphanDispatcher", "unable to decode record", e)
+                        logger?.warn("OphanDispatcher", "unable to decode record", e)
                         null
                     }
                 }
         if (events.isNotEmpty()) {
-            logger.debug("OphanDispatcher", "sending ${events.size} events")
+            logger?.debug("OphanDispatcher", "sending ${events.size} events")
             val submission = NativeAppSubmission.Builder()
                     .app(app)
                     .device(device)
@@ -96,21 +112,21 @@ class OphanDispatcher(
                 sendSubmission(submission)
                 events.forEach { recordStore.removeRecord(it.eventId) }
             } catch (e: Exception) {
-                logger.warn("OphanDispatcher", "failed to send ${events.size} events", e)
+                logger?.warn("OphanDispatcher", "failed to send ${events.size} events", e)
             }
         } else {
-            logger.warn("OphanDispatcher", "no events to send!")
+            logger?.warn("OphanDispatcher", "no events to send!")
         }
     }
 
     private suspend fun sendSubmission(submission: NativeAppSubmission): HttpResponse {
-        val response = httpClient.use { client ->
+        val response = HttpClient().use { client ->
             client.post<HttpResponse>(ophanUrl) {
                 body = ByteArrayContent(toBytes(submission), thriftContentType)
             }
         }
-        logger.debug("OphanDispatcher","It worked!")
-        logger.debug("OphanDispatcher", response.readText())
+        logger?.debug("OphanDispatcher", response.readText())
+        logger?.debug("OphanDispatcher","It worked, the current version is 0.0.11")
         return response
     }
 
@@ -124,10 +140,4 @@ class OphanDispatcher(
             packet.readAvailable(this)
         }
     }
-}
-
-interface RecordStore {
-    fun putRecord(key: String, record: ByteArray)
-    fun getRecords(): List<ByteArray>
-    fun removeRecord(key: String)
 }

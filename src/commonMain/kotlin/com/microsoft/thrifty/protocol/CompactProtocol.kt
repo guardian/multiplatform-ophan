@@ -47,12 +47,17 @@ package com.microsoft.thrifty.protocol
 
 import com.microsoft.thrifty.TType
 import com.microsoft.thrifty.transport.Transport
+import kotlinx.io.charsets.Charset
 import kotlinx.io.charsets.Charsets
 import kotlinx.io.core.EOFException
 import kotlinx.io.core.String
 import kotlinx.io.core.toByteArray
 import kotlin.experimental.and
 import kotlin.experimental.or
+import kotlin.native.concurrent.SharedImmutable
+
+@SharedImmutable
+val SharedImmutableUtf8: Charset = Charsets.UTF_8
 
 /**
  * An implementation of the Thrift compact binary protocol.
@@ -214,7 +219,7 @@ class CompactProtocol(transport: Transport) : Protocol(transport) {
     }
 
     override fun writeString(str: String) {
-        val bytes = str.toByteArray(Charsets.UTF_8)
+        val bytes = str.toByteArray(SharedImmutableUtf8)
         writeVarint32(bytes.size)
         transport.write(bytes)
     }
@@ -429,8 +434,7 @@ class CompactProtocol(transport: Transport) : Protocol(transport) {
 
         val bytes = ByteArray(length)
         readFully(bytes, length)
-
-        return String(bytes, charset = Charsets.UTF_8)
+        return String(bytes, charset = SharedImmutableUtf8)
     }
 
     override fun readBinary(): ByteArray {

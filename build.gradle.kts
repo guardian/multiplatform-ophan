@@ -37,8 +37,8 @@ kotlin {
         named("commonMain") {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.2")
-                implementation("io.ktor:ktor-client-core:1.2.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.0-RC")
+                implementation("io.ktor:ktor-client-core:1.2.3")
                 implementation("com.soywiz.korlibs.klock:klock:1.5.0")
             }
         }
@@ -51,8 +51,8 @@ kotlin {
         named("jvmMain") {
             dependencies {
                 implementation(kotlin("stdlib"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.2")
-                implementation("io.ktor:ktor-client-android:1.2.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC")
+                implementation("io.ktor:ktor-client-android:1.2.3")
             }
         }
         named("jvmTest") {
@@ -63,8 +63,8 @@ kotlin {
         }
         val iosMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.2.2")
-                implementation("io.ktor:ktor-client-ios:1.2.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.0-RC")
+                implementation("io.ktor:ktor-client-ios:1.2.3")
             }
         }
         val iosArm64Main by getting {
