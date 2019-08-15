@@ -14,3 +14,7 @@ class MainQueueDispatcher : CoroutineDispatcher() {
         }
     }
 }
+
+actual fun getDefaultCoroutineContext(): CoroutineContext {
+    return MainQueueDispatcher()
+}
