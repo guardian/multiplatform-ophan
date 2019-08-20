@@ -23,11 +23,14 @@ actual class FileRecordStore actual constructor(path: String) : RecordStore {
 
     private fun initRecordDirectory(documentsDirectoryUrl: NSURL, path: String): NSURL {
         val url = documentsDirectoryUrl.append(path, isDirectory = true)
-        throwError { errorPointer ->
-            fileManager.createDirectoryAtURL(url, false, null, errorPointer)
-        }
         url.path?.let {
-            println("$it exists? ${fileManager.fileExistsAtPath(it)}")
+            if (!fileManager.fileExistsAtPath(it)) {
+                println("$it does not exist, creating it...")
+                throwError { errorPointer ->
+                    fileManager.createDirectoryAtURL(url, false, null, errorPointer)
+                }
+            }
+            println("Confirm $it exists? ${fileManager.fileExistsAtPath(it)}")
         }
         return url
     }
@@ -45,7 +48,6 @@ actual class FileRecordStore actual constructor(path: String) : RecordStore {
         return fileManager
             .contentsOfDirectoryAtURL(recordDirectory, null, 0.toULong(), null)
             ?.mapNotNull { it as? NSURL }
-            ?.mapNotNull { it.URLByAppendingPathComponent("wrong") }
             ?.mapNotNull { url ->
                 try {
                     throwError { errorPointer ->
@@ -61,7 +63,7 @@ actual class FileRecordStore actual constructor(path: String) : RecordStore {
     }
 
     override fun removeRecord(key: String) {
-        fileManager.removeItemAtURL(urlForKey(key) ?: return, null)
+        fileManager.removeItemAtURL(urlForKey(key), null)
     }
 
     private fun urlForKey(key: String): NSURL {
@@ -84,7 +86,9 @@ actual class FileRecordStore actual constructor(path: String) : RecordStore {
     }
 }
 
-@Throws(NSErrorException::class)
+// We can't use the @Throws annotation here due to a compiler bug which will be fixed in 1.3.50:
+// https://youtrack.jetbrains.com/issue/KT-28927
+//@Throws(NSErrorException::class)
 fun <T> throwError(block: (errorPointer: CPointer<ObjCObjectVar<NSError?>>) -> T): T {
     memScoped {
         val errorPointer: CPointer<ObjCObjectVar<NSError?>> = alloc<ObjCObjectVar<NSError?>>().ptr
