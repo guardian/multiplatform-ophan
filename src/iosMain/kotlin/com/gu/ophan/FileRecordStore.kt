@@ -21,8 +21,8 @@ actual class FileRecordStore actual constructor(path: String) : RecordStore {
         recordDirectory = initRecordDirectory(documentsDirectoryUrl, path)
     }
 
-    private fun initRecordDirectory(documentsDirectoryUrl: NSURL, path: String): NSURL {
-        val url = documentsDirectoryUrl.append(path, isDirectory = true)
+    private fun initRecordDirectory(parentDirectory: NSURL, path: String): NSURL {
+        val url = parentDirectory.append(path, isDirectory = true)
         url.path?.let {
             if (!fileManager.fileExistsAtPath(it)) {
                 println("$it does not exist, creating it...")
@@ -70,22 +70,46 @@ actual class FileRecordStore actual constructor(path: String) : RecordStore {
         return recordDirectory.append(key)
     }
 
+    /**
+     * Return these bytes as an [NSData].
+     */
     private fun ByteArray.toNSData(): NSData {
         return usePinned {
             NSData.dataWithBytes(it.addressOf(0), it.get().size.toULong())
         }
     }
 
+    /**
+     * Return this data as a [ByteArray].
+     */
     private fun NSData.toByteArray(): ByteArray? {
         return this.bytes?.readBytes(this.length.toInt())
     }
 
+    /**
+     * Append a path component and return the resulting [NSURL], or throw a [RuntimeException] if that would give null.
+     */
     private fun NSURL.append(component: String, isDirectory: Boolean = false): NSURL {
         return URLByAppendingPathComponent(component, isDirectory)
             ?: throw RuntimeException("could not create record directory url")
     }
 }
 
+/**
+ * Helper method allowing any [NSError] error that occurs within [block] to be thrown as an exception.
+ *
+ * Apple's Objective-C libraries have their own error-handling idiom. Various functions accept a parameter called
+ * `error` which is a pointer and these functions will make that pointer point to an [NSError] if something goes wrong.
+ * In Kotlin, using a pointer in this way is cumbersome so this helper handles the heavy lifting and let's you write
+ * code like this:
+ *
+ *     throwError { errorPointer ->
+ *         NSData.dataWithContentsOfURL(url, 0.toULong(), errorPointer)
+ *     }
+ *
+ * which either evaluates to the expected [NSData] returned by `dataWithContentsOfURL` or throws an [NSErrorException]
+ * if something went wrong. This exception can be caught and handled in the normal way.
+ */
 // We can't use the @Throws annotation here due to a compiler bug which will be fixed in 1.3.50:
 // https://youtrack.jetbrains.com/issue/KT-28927
 //@Throws(NSErrorException::class)
