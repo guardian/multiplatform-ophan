@@ -1,5 +1,5 @@
 group = "com.gu.kotlin"
-version = "0.0.11"
+version = "0.1.0"
 
 Properties bintrayProperties = new Properties()
 try {
@@ -22,10 +22,10 @@ bintray {
         licenses = ["MIT"]
         vcsUrl = "https://github.com/guardian/multiplatform-ophan.git"
         version {
-            name = "0.0.11"
-            desc = "Multiplatform Ophan 0.0.11"
+            name = "0.1.0"
+            desc = "Multiplatform Ophan 0.1.0"
             released = new Date()
-            vcsTag = "v0.0.11"
+            vcsTag = "v0.1.0"
         }
     }
 }
