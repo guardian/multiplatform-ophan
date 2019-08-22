@@ -11,8 +11,6 @@ import io.ktor.client.response.HttpResponse
 import io.ktor.client.response.readText
 import io.ktor.http.ContentType
 import io.ktor.http.content.ByteArrayContent
-import io.ktor.util.InternalAPI
-import io.ktor.util.encodeBase64
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.io.core.ByteReadPacket
@@ -30,7 +28,7 @@ interface Logger {
     fun warn(tag: String, message: String, error: Throwable? = null)
 }
 
-@InternalAPI
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 class OphanDispatcher(
     private val app: App,
     private val device: Device,
@@ -76,7 +74,7 @@ class OphanDispatcher(
         }.readBytes()
         val key = event.eventId
         recordStore.putRecord(key, record)
-        logger?.debug("OphanDispatcher", "putRecord($key, ${record.encodeBase64()})")
+        logger?.debug("OphanDispatcher", "putting record $key")
         sendEvents()
     }
 
