@@ -23,11 +23,6 @@ import ophan.thrift.nativeapp.Event
 import ophan.thrift.nativeapp.NativeAppSubmission
 import kotlin.coroutines.CoroutineContext
 
-interface Logger {
-    fun debug(tag: String, message: String)
-    fun warn(tag: String, message: String, error: Throwable? = null)
-}
-
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class OphanDispatcher(
     private val app: App,
