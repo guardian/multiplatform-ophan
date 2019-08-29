@@ -4,3 +4,5 @@ interface Logger {
     fun debug(tag: String, message: String)
     fun warn(tag: String, message: String, error: Throwable? = null)
 }
+
+expect class DefaultLogger: Logger
