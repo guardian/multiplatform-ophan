@@ -5,7 +5,8 @@ import java.io.File
 
 actual class FileRecordStore actual constructor(path: String): RecordStore {
 
-    private val directory = File(path)
+    // Get the record store directory and ensure it exists:
+    private val directory = File(path).apply { mkdirs() }
 
     override fun putRecord(key: String, record: ByteArray) {
         recordFile(key).writeBytes(record)
