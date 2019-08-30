@@ -33,6 +33,14 @@ kotlin {
         }
     }
 
+    val iosArm32 = iosArm32("iosArm32") {
+        binaries {
+            framework {
+                baseName = "MultiplatformOphan"
+            }
+        }
+    }
+
     sourceSets {
         named("commonMain") {
             dependencies {
@@ -69,6 +77,13 @@ kotlin {
         }
         val iosArm64Main by getting {
             dependsOn(iosMain)
+        }
+        val iosArm32Main by getting {
+            //dependsOn(iosMain)
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.0-RC")
+                implementation("io.ktor:ktor-client-ios:1.2.3")
+            }
         }
     }
 

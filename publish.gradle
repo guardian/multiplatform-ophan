@@ -12,6 +12,7 @@ bintray {
     publications = [
             "ios",
             "iosArm64",
+            "iosArm32",
             "jvm",
             "kotlinMultiplatform",
             "metadata"
