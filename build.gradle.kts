@@ -1,5 +1,6 @@
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
+import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
@@ -14,30 +15,15 @@ repositories {
 
 kotlin {
     jvm()
+    val iosX64 = iosX64("ios")
+    val iosArm64 = iosArm64("iosArm64")
+    val iosArm32 = iosArm32("iosArm32")
 
-    // This is for iPhone emulator
-    // Switch here to iosArm64 (or iosArm32) to build library for iPhone device
-    val ios64 = iosX64("ios") {
-        binaries {
-            framework {
-                baseName = "MultiplatformOphan"
-            }
-        }
-    }
+    val frameworkName = "MultiplatformOphan"
 
-    val iosArm64 = iosArm64("iosArm64") {
-        binaries {
-            framework {
-                baseName = "MultiplatformOphan"
-            }
-        }
-    }
-
-    val iosArm32 = iosArm32("iosArm32") {
-        binaries {
-            framework {
-                baseName = "MultiplatformOphan"
-            }
+    configure(listOf(iosX64, iosArm64, iosArm32)) {
+        binaries.framework {
+            baseName = frameworkName
         }
     }
 
@@ -79,7 +65,6 @@ kotlin {
             dependsOn(iosMain)
         }
         val iosArm32Main by getting {
-            //dependsOn(iosMain)
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.0-RC")
                 implementation("io.ktor:ktor-client-ios:1.2.3")
@@ -87,17 +72,44 @@ kotlin {
         }
     }
 
-    val linkDebugFrameworkIos by tasks.getting
+    val debugFatFramework by tasks.creating(FatFrameworkTask::class) {
+        baseName = frameworkName
+        from(
+            iosArm32.binaries.getFramework("debug"),
+            iosArm64.binaries.getFramework("debug"),
+            iosX64.binaries.getFramework("debug")
+        )
+        destinationDir = buildDir.resolve("fat-framework/debug")
+        group = "Universal framework"
+        description = "Builds a debug universal (fat) framework"
+    }
 
-    val zipIosFramework by tasks.creating(Zip::class) {
-        dependsOn(linkDebugFrameworkIos)
-        archiveName = "MultiplatformOphan-iOS.zip"
-        from(ios64.binaries.getFramework("debug").outputDirectory)
+    val releaseFatFramework by tasks.creating(FatFrameworkTask::class) {
+        baseName = frameworkName
+        from(
+            iosArm32.binaries.getFramework("release"),
+            iosArm64.binaries.getFramework("release"),
+            iosX64.binaries.getFramework("release")
+        )
+        destinationDir = buildDir.resolve("fat-framework/release")
+        group = "Universal framework"
+        description = "Builds a release universal (fat) framework"
+    }
+
+    val zipDebugFatFramework by tasks.creating(Zip::class) {
+        dependsOn(debugFatFramework)
+        from(debugFatFramework)
+        from("LICENSE.md")
+    }
+
+    val zipReleaseFatFramework by tasks.creating(Zip::class) {
+        dependsOn(releaseFatFramework)
+        from(releaseFatFramework)
         from("LICENSE.md")
     }
 
     publishing.publications.named<MavenPublication>("ios") {
-        artifact(zipIosFramework)
+        artifact(zipReleaseFatFramework)
     }
 }
 
