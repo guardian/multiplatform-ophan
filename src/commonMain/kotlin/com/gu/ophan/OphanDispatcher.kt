@@ -33,7 +33,7 @@ class OphanDispatcher(
     private val app: App,
     private val device: Device,
     private val deviceId: String,
-    private val userId: String,
+    private val userId: String?,
     private val logger: Logger?,
     private val recordStore: RecordStore,
     private val coroutineContext: CoroutineContext
@@ -124,7 +124,7 @@ class OphanDispatcher(
             }
         }
         logger?.debug("OphanDispatcher", response.readText())
-        logger?.debug("OphanDispatcher","It worked, the current version is 0.1.3")
+        logger?.debug("OphanDispatcher","It worked, the current version is 0.1.4")
         return response
     }
 
