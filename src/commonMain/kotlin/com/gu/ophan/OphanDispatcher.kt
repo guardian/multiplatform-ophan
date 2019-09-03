@@ -38,10 +38,10 @@ class OphanDispatcher(
     private val recordStore: RecordStore,
     private val coroutineContext: CoroutineContext
 ) {
-    constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?, recordStore: RecordStore) :
+    constructor(app: App, device: Device, deviceId: String, userId: String?, logger: Logger?, recordStore: RecordStore) :
             this(app, device, deviceId, userId, logger, recordStore, getDefaultCoroutineContext())
 
-    constructor(app: App, device: Device, deviceId: String, userId: String, logger: Logger?) :
+    constructor(app: App, device: Device, deviceId: String, userId: String?, logger: Logger?) :
             this(app, device, deviceId, userId, logger, InMemoryRecordStore())
 
     init {
@@ -124,7 +124,7 @@ class OphanDispatcher(
             }
         }
         logger?.debug("OphanDispatcher", response.readText())
-        logger?.debug("OphanDispatcher","It worked, the current version is 0.1.4")
+        logger?.debug("OphanDispatcher","It worked, the current version is 0.1.5")
         return response
     }
 
