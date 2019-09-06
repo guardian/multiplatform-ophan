@@ -121,7 +121,8 @@ class CompactProtocol(transport: Transport) : Protocol(transport) {
     private fun writeFieldBegin(fieldId: Int, compactTypeId: Byte) {
         // Can we delta-encode the field ID?
         if (fieldId > lastWritingField && fieldId - lastWritingField <= 15) {
-            writeByte((fieldId - lastWritingField shl 4 or compactTypeId.toInt()).toByte())
+            val fieldIdDelta: Byte = (fieldId - lastWritingField).toByte()
+            writeByte((fieldIdDelta shl 4) or compactTypeId)
         } else {
             writeByte(compactTypeId)
             writeI16(fieldId.toShort())
@@ -312,13 +313,13 @@ class CompactProtocol(transport: Transport) : Protocol(transport) {
 
     override fun readFieldBegin(): FieldMetadata {
         val compactId = readByte()
-        val typeId = CompactTypes.compactToTtype((compactId and 0x0F))
+        val typeId = CompactTypes.compactToTtype(compactId and 0x0F)
         if (compactId == TType.STOP) {
             return END_FIELDS
         }
 
         val fieldId: Short
-        val modifier = (compactId and 0xF0.toByte() shr 4).toShort()
+        val modifier: Short = ((compactId.toInt() and 0xF0) ushr 4).toShort()
         if (modifier.toInt() == 0) {
             // This is not a field-ID delta - read the entire ID.
             fieldId = readI16()

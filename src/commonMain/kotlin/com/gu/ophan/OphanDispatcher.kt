@@ -44,22 +44,16 @@ class OphanDispatcher(
     constructor(app: App, device: Device, deviceId: String, userId: String?, logger: Logger?) :
             this(app, device, deviceId, userId, logger, InMemoryRecordStore())
 
-    init {
-        logger?.debug("OphanDispatcher", "Ophan dispatcher created")
-    }
-
     private val ophanUrl = "https://ophan.theguardian.com/mob-loopback"
     private val thriftContentType = ContentType("application", "vnd.apache.thrift.compact")
 
     fun dispatchEvent(event: Event) {
-        logger?.debug("OphanDispatcher", "About to pass coroutineContext...")
         dispatchEvent(event, coroutineContext)
     }
 
     fun dispatchEvent(event: Event, context: CoroutineContext) {
-        logger?.debug("OphanDispatcher", "About to invoke function with coroutineContext...")
+        logger?.debug("OphanDispatcher", "dispatching event $event")
         CoroutineScope(context).launch {
-            logger?.debug("OphanDispatcher", "Event B")
             storeAndSendEvent(event)
         }
     }
@@ -74,7 +68,7 @@ class OphanDispatcher(
         }.readBytes()
         val key = event.eventId
         recordStore.putRecord(key, record)
-        logger?.debug("OphanDispatcher", "putting record $key")
+        logger?.debug("OphanDispatcher", "putting record $key, ${record.size} bytes")
         sendEvents()
     }
 
@@ -90,7 +84,6 @@ class OphanDispatcher(
                         val protocol = CompactProtocol(transport)
                         val e = Event.ADAPTER.read(protocol)
                         val ageMillis = nowMillis - millisWhenStored
-                        logger?.debug("OphanDispatcher", "ageMsLong=$ageMillis")
                         e.copy(ageMsLong = ageMillis)
                     } catch (e: Throwable) {
                         logger?.warn("OphanDispatcher", "unable to decode record", e)
