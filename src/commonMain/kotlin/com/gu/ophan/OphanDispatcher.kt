@@ -28,6 +28,9 @@ interface Logger {
     fun warn(tag: String, message: String, error: Throwable? = null)
 }
 
+private const val OPHAN_URL_DEBUG = "https://ophan.theguardian.com/mob-loopback"
+private const val OPHAN_URL_PROD = "https://ophan.theguardian.com/mob"
+
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 class OphanDispatcher(
     private val app: App,
@@ -36,15 +39,13 @@ class OphanDispatcher(
     private val userId: String?,
     private val logger: Logger?,
     private val recordStore: RecordStore,
-    private val coroutineContext: CoroutineContext
+    private val coroutineContext: CoroutineContext,
+    useDebug: Boolean
 ) {
-    constructor(app: App, device: Device, deviceId: String, userId: String?, logger: Logger?, recordStore: RecordStore) :
-            this(app, device, deviceId, userId, logger, recordStore, getDefaultCoroutineContext())
+    constructor(app: App, device: Device, deviceId: String, userId: String?, logger: Logger?, recordStore: RecordStore, useDebug: Boolean) :
+            this(app, device, deviceId, userId, logger, recordStore, getDefaultCoroutineContext(), useDebug)
 
-    constructor(app: App, device: Device, deviceId: String, userId: String?, logger: Logger?) :
-            this(app, device, deviceId, userId, logger, InMemoryRecordStore())
-
-    private val ophanUrl = "https://ophan.theguardian.com/mob-loopback"
+    private val ophanUrl = if (useDebug) OPHAN_URL_DEBUG else OPHAN_URL_PROD
     private val thriftContentType = ContentType("application", "vnd.apache.thrift.compact")
 
     fun dispatchEvent(event: Event) {
