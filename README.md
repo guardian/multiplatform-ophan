@@ -64,6 +64,16 @@ Add `multiplatform-ophan` as a dependency:
             }
         }
     }
+
+### Scala
+
+Add this to your project's sbt config:
+
+    # build.sbt
+    
+    resolvers += Resolver.jcenterRepo
+    resolvers += "Guardian Kotlin Bintray" at "https://dl.bintray.com/guardian/kotlin"
+    libraryDependencies += "com.gu.kotlin" % "multiplatform-ophan-jvm" % "<version>"
     
 ## Usage
 
