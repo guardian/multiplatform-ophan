@@ -98,7 +98,9 @@ enum class SignificantSite(@JvmField val value: Int) {
 
     IN_SHORTS(20),
 
-    UPDAY(21);
+    UPDAY(21),
+
+    SMART_NEWS(22);
 
     companion object {
         @JvmStatic
@@ -125,6 +127,7 @@ enum class SignificantSite(@JvmField val value: Int) {
             19 -> APPLE_NEWS
             20 -> IN_SHORTS
             21 -> UPDAY
+            22 -> SMART_NEWS
             else -> null
         }
     }
@@ -180,7 +183,12 @@ enum class Platform(@JvmField val value: Int) {
 
     MANAGE_MY_ACCOUNT(18),
 
-    SMART_NEWS(19);
+    SMART_NEWS(19),
+
+    /**
+     * also called "The Daily Edition" and other names
+     */
+    EDITIONS(20);
 
     companion object {
         @JvmStatic
@@ -205,6 +213,7 @@ enum class Platform(@JvmField val value: Int) {
             17 -> SUBSCRIBE
             18 -> MANAGE_MY_ACCOUNT
             19 -> SMART_NEWS
+            20 -> EDITIONS
             else -> null
         }
     }
@@ -393,7 +402,13 @@ enum class PaymentProvider(@JvmField val value: Int) {
 
     GOCARDLESS(3),
 
-    IN_APP_PURCHASE(4);
+    IN_APP_PURCHASE(4),
+
+    STRIPE_APPLE_PAY(5),
+
+    STRIPE_PAYMENT_REQUEST_BUTTON(6),
+
+    SUBSCRIBE_WITH_GOOGLE(7);
 
     companion object {
         @JvmStatic
@@ -402,6 +417,9 @@ enum class PaymentProvider(@JvmField val value: Int) {
             2 -> PAYPAL
             3 -> GOCARDLESS
             4 -> IN_APP_PURCHASE
+            5 -> STRIPE_APPLE_PAY
+            6 -> STRIPE_PAYMENT_REQUEST_BUTTON
+            7 -> SUBSCRIBE_WITH_GOOGLE
             else -> null
         }
     }
