@@ -78,5 +78,5 @@ _Important note: This will only work if you have appropriate Bintray credentials
 1. Use the "Replace in Path..." to update all version numbers,
 2. Make a commit and tag it with `git tag -a v<version> -m "<message>"`
 3. Upload to Bintray with `./gradlew bintrayUpload`
-4. Publish in the Bintray web UI.
+4. Publish in the [Bintray web UI](https://bintray.com/beta/#/guardian/kotlin/multiplatform-ophan?tab=overview).
 5. Publish the Podspec with updated version number with `pod repo push <repo name> MultiplatformOphan.podspec`
