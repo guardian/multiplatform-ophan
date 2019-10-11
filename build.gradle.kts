@@ -122,8 +122,8 @@ tasks.register<Exec>("generateThriftModels") {
             "--list-type=kotlin.collections.ArrayList",
             "--set-type=kotlin.collections.LinkedHashSet",
             "--out", "src/commonMain/kotlin",
-            "--path", "../android-news-app/ophan/event-model/src/main/thrift/",
-            "../android-news-app/ophan/event-model/src/main/thrift/nativeapp.thrift"
+            "--path", "./thrift/",
+            "./thrift/nativeapp.thrift"
     )
 }
 
