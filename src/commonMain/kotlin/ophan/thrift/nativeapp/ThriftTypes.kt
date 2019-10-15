@@ -18,10 +18,12 @@ import kotlin.jvm.JvmStatic
 import ophan.thrift.benchmark.BenchmarkData
 import ophan.thrift.benchmark.NetworkOperationData
 import ophan.thrift.componentEvent.ComponentEvent
+import ophan.thrift.device.DeviceClass
 import ophan.thrift.event.AbTestInfo
 import ophan.thrift.event.Acquisition
 import ophan.thrift.event.Interaction
 import ophan.thrift.event.MediaPlayback
+import ophan.thrift.event.Platform
 import ophan.thrift.event.Referrer
 import ophan.thrift.event.RenderedAd
 import ophan.thrift.event.Url
@@ -916,7 +918,8 @@ data class App(
     @JvmField @ThriftField(fieldId = 1, isOptional = true) val version: String?,
     @JvmField @ThriftField(fieldId = 2, isOptional = true) val family: String?,
     @JvmField @ThriftField(fieldId = 3, isOptional = true) val os: String?,
-    @JvmField @ThriftField(fieldId = 4, isOptional = true) val edition: Edition?
+    @JvmField @ThriftField(fieldId = 4, isOptional = true) val edition: Edition?,
+    @JvmField @ThriftField(fieldId = 5, isOptional = true) val platform: Platform?
 ) : Struct {
     override fun write(protocol: Protocol) {
         ADAPTER.write(protocol, this)
@@ -931,11 +934,14 @@ data class App(
 
         private var edition: Edition? = null
 
+        private var platform: Platform? = null
+
         constructor() {
             this.version = null
             this.family = null
             this.os = null
             this.edition = null
+            this.platform = null
         }
 
         constructor(source: App) {
@@ -943,6 +949,7 @@ data class App(
             this.family = source.family
             this.os = source.os
             this.edition = source.edition
+            this.platform = source.platform
         }
 
         fun version(version: String?) = apply { this.version = version }
@@ -953,13 +960,16 @@ data class App(
 
         fun edition(edition: Edition?) = apply { this.edition = edition }
 
+        fun platform(platform: Platform?) = apply { this.platform = platform }
+
         override fun build(): App = App(version = this.version, family = this.family, os = this.os,
-                edition = this.edition)
+                edition = this.edition, platform = this.platform)
         override fun reset() {
             this.version = null
             this.family = null
             this.os = null
             this.edition = null
+            this.platform = null
         }
     }
 
@@ -1008,6 +1018,16 @@ data class App(
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
                     }
+                    5 -> {
+                        if (fieldMeta.typeId == TType.I32) {
+                            val platform = protocol.readI32().let {
+                                Platform.findByValue(it) ?: throw ThriftException(ThriftException.Kind.PROTOCOL_ERROR, "Unexpected value for enum type Platform: $it")
+                            }
+                            builder.platform(platform)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
                     else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
                 }
                 protocol.readFieldEnd()
@@ -1038,6 +1058,11 @@ data class App(
                 protocol.writeI32(struct.edition.value)
                 protocol.writeFieldEnd()
             }
+            if (struct.platform != null) {
+                protocol.writeFieldBegin("platform", 5, TType.I32)
+                protocol.writeI32(struct.platform.value)
+                protocol.writeFieldEnd()
+            }
             protocol.writeFieldStop()
             protocol.writeStructEnd()
         }
@@ -1049,7 +1074,11 @@ data class App(
     }
 }
 
-data class Device(@JvmField @ThriftField(fieldId = 1, isOptional = true) val name: String?, @JvmField @ThriftField(fieldId = 2, isOptional = true) val manufacturer: String?) : Struct {
+data class Device(
+    @JvmField @ThriftField(fieldId = 1, isOptional = true) val name: String?,
+    @JvmField @ThriftField(fieldId = 2, isOptional = true) val manufacturer: String?,
+    @JvmField @ThriftField(fieldId = 3, isOptional = true) val deviceClass: DeviceClass?
+) : Struct {
     override fun write(protocol: Protocol) {
         ADAPTER.write(protocol, this)
     }
@@ -1059,24 +1088,32 @@ data class Device(@JvmField @ThriftField(fieldId = 1, isOptional = true) val nam
 
         private var manufacturer: String? = null
 
+        private var deviceClass: DeviceClass? = null
+
         constructor() {
             this.name = null
             this.manufacturer = null
+            this.deviceClass = null
         }
 
         constructor(source: Device) {
             this.name = source.name
             this.manufacturer = source.manufacturer
+            this.deviceClass = source.deviceClass
         }
 
         fun name(name: String?) = apply { this.name = name }
 
         fun manufacturer(manufacturer: String?) = apply { this.manufacturer = manufacturer }
 
-        override fun build(): Device = Device(name = this.name, manufacturer = this.manufacturer)
+        fun deviceClass(deviceClass: DeviceClass?) = apply { this.deviceClass = deviceClass }
+
+        override fun build(): Device = Device(name = this.name, manufacturer = this.manufacturer,
+                deviceClass = this.deviceClass)
         override fun reset() {
             this.name = null
             this.manufacturer = null
+            this.deviceClass = null
         }
     }
 
@@ -1107,6 +1144,16 @@ data class Device(@JvmField @ThriftField(fieldId = 1, isOptional = true) val nam
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
                     }
+                    3 -> {
+                        if (fieldMeta.typeId == TType.I32) {
+                            val deviceClass = protocol.readI32().let {
+                                DeviceClass.findByValue(it) ?: throw ThriftException(ThriftException.Kind.PROTOCOL_ERROR, "Unexpected value for enum type DeviceClass: $it")
+                            }
+                            builder.deviceClass(deviceClass)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
                     else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
                 }
                 protocol.readFieldEnd()
@@ -1125,6 +1172,11 @@ data class Device(@JvmField @ThriftField(fieldId = 1, isOptional = true) val nam
             if (struct.manufacturer != null) {
                 protocol.writeFieldBegin("manufacturer", 2, TType.STRING)
                 protocol.writeString(struct.manufacturer)
+                protocol.writeFieldEnd()
+            }
+            if (struct.deviceClass != null) {
+                protocol.writeFieldBegin("deviceClass", 3, TType.I32)
+                protocol.writeI32(struct.deviceClass.value)
                 protocol.writeFieldEnd()
             }
             protocol.writeFieldStop()

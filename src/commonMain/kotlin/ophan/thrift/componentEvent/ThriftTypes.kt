@@ -159,7 +159,15 @@ enum class ComponentType(@JvmField val value: Int) {
 
     APP_THRASHER(32),
 
-    APP_VIDEO(33);
+    APP_VIDEO(33),
+
+    AUDIO_ATOM(34),
+
+    CHART_ATOM(35),
+
+    ACQUISITIONS_MERCHANDISING(36),
+
+    ACQUISITIONS_HOUSE_ADS(37);
 
     companion object {
         @JvmStatic
@@ -197,6 +205,10 @@ enum class ComponentType(@JvmField val value: Int) {
             31 -> APP_SCREEN
             32 -> APP_THRASHER
             33 -> APP_VIDEO
+            34 -> AUDIO_ATOM
+            35 -> CHART_ATOM
+            36 -> ACQUISITIONS_MERCHANDISING
+            37 -> ACQUISITIONS_HOUSE_ADS
             else -> null
         }
     }
