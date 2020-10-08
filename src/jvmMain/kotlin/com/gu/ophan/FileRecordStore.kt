@@ -9,7 +9,11 @@ actual class FileRecordStore actual constructor(path: String): RecordStore {
     private val directory = File(path).apply { mkdirs() }
 
     override fun putRecord(key: String, record: ByteArray) {
-        recordFile(key).writeBytes(record)
+        val file = recordFile(key)
+        // recordstore file is in cache and can be delete by OS, check if it exist
+        if(file.exists()) {
+            file.writeBytes(record)
+        }
     }
 
     override fun getRecords(): List<ByteArray> {
