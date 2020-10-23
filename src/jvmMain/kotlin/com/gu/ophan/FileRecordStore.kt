@@ -10,10 +10,12 @@ actual class FileRecordStore actual constructor(path: String): RecordStore {
 
     override fun putRecord(key: String, record: ByteArray) {
         val file = recordFile(key)
-        // recordstore file is in cache and can be delete by OS, check if it exist
-        if(file.exists()) {
-            file.writeBytes(record)
+        // record store directory is in the `cache` and can be deleted by the OS so re-create it if it does not exist.
+        if(!directory.exists()) {
+            file.mkdirs()
         }
+
+        file.writeBytes(record)
     }
 
     override fun getRecords(): List<ByteArray> {

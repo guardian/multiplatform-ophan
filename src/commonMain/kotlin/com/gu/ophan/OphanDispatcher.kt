@@ -118,7 +118,7 @@ class OphanDispatcher(
             }
         }
         logger?.debug("OphanDispatcher", response.readText())
-        logger?.debug("OphanDispatcher","It worked, the current version is 0.1.8")
+        logger?.debug("OphanDispatcher","It worked, the current version is 0.1.10")
         return response
     }
 
