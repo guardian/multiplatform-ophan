@@ -12,7 +12,7 @@ actual class FileRecordStore actual constructor(path: String): RecordStore {
         val file = recordFile(key)
         // record store directory is in the `cache` and can be deleted by the OS so re-create it if it does not exist.
         if(!directory.exists()) {
-            file.mkdirs()
+            directory.mkdirs()
         }
 
         file.writeBytes(record)
