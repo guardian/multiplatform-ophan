@@ -16,6 +16,10 @@ repositories {
 
 kotlin {
     jvm()
+    js {
+        nodejs()
+        binaries.executable()
+    }
     /*
     val iosX64 = iosX64("ios")
     val iosArm64 = iosArm64("iosArm64")
@@ -60,6 +64,13 @@ kotlin {
             dependencies {
                 implementation(kotlin("test"))
                 implementation(kotlin("test-junit"))
+            }
+        }
+        named("jsMain") {
+            dependencies {
+                //implementation(kotlin("stdlib"))
+                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC")
+                //implementation("io.ktor:ktor-client-android:$ktorVersion")
             }
         }
         /*
