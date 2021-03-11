@@ -70,7 +70,7 @@ kotlin {
             dependencies {
                 //implementation(kotlin("stdlib"))
                 //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC")
-                //implementation("io.ktor:ktor-client-android:$ktorVersion")
+                implementation("io.ktor:ktor-client-js:$ktorVersion")
             }
         }
         /*
