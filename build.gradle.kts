@@ -1,6 +1,6 @@
 import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
-import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
+//import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
 plugins {
     //id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
@@ -71,6 +71,7 @@ kotlin {
                 //implementation(kotlin("stdlib"))
                 //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC")
                 implementation("io.ktor:ktor-client-js:$ktorVersion")
+                implementation(npm("uuid", "8.3.2"))
             }
         }
         /*
