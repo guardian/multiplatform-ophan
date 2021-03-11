@@ -3,7 +3,8 @@ import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
 plugins {
-    id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
+    //id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
+    kotlin("multiplatform") version "1.4.31"
     id("maven-publish")
     id("com.jfrog.bintray") version "1.8.4"
 }
@@ -15,6 +16,7 @@ repositories {
 
 kotlin {
     jvm()
+    /*
     val iosX64 = iosX64("ios")
     val iosArm64 = iosArm64("iosArm64")
     val iosArm32 = iosArm32("iosArm32")
@@ -26,14 +28,19 @@ kotlin {
             baseName = frameworkName
         }
     }
+    */
+
+    val coroutinesVersion = "1.4.3"
+    val ktorVersion = "1.2.3"
+    val klockVersion = "1.5.0"
 
     sourceSets {
         named("commonMain") {
             dependencies {
-                implementation(kotlin("stdlib-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.0-RC")
-                implementation("io.ktor:ktor-client-core:1.2.3")
-                implementation("com.soywiz.korlibs.klock:klock:1.5.0")
+                //implementation(kotlin("stdlib-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
             }
         }
         named("commonTest") {
@@ -44,9 +51,9 @@ kotlin {
         }
         named("jvmMain") {
             dependencies {
-                implementation(kotlin("stdlib"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC")
-                implementation("io.ktor:ktor-client-android:1.2.3")
+                //implementation(kotlin("stdlib"))
+                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC")
+                implementation("io.ktor:ktor-client-android:$ktorVersion")
             }
         }
         named("jvmTest") {
@@ -55,9 +62,10 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
+        /*
         val iosMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.0-RC")
+                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.0-RC")
                 implementation("io.ktor:ktor-client-ios:1.2.3")
             }
         }
@@ -70,8 +78,10 @@ kotlin {
                 implementation("io.ktor:ktor-client-ios:1.2.3")
             }
         }
+        */
     }
 
+    /*
     val debugFatFramework by tasks.creating(FatFrameworkTask::class) {
         baseName = frameworkName
         from(
@@ -111,6 +121,7 @@ kotlin {
     publishing.publications.named<MavenPublication>("ios") {
         artifact(zipReleaseFatFramework)
     }
+    */
 }
 
 tasks.register<Exec>("generateThriftModels") {
@@ -144,4 +155,4 @@ tasks.withType<BintrayUploadTask> {
     }
 }
 
-apply(from = "publish.gradle")
+//apply(from = "publish.gradle")
