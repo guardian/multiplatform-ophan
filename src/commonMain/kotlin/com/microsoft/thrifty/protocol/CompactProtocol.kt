@@ -241,37 +241,37 @@ class CompactProtocol(transport: Transport) : Protocol(transport) {
     }
 
     private fun writeVarint32(n: Int) {
-        var n = n
+        var nCopy = n
         for (i in buffer.indices) {
-            if (n and 0x7F.inv() == 0x00) {
-                buffer[i] = n.toByte()
+            if (nCopy and 0x7F.inv() == 0x00) {
+                buffer[i] = nCopy.toByte()
                 transport.write(buffer, 0, i + 1)
                 return
             } else {
-                buffer[i] = (n and 0x7F or 0x80).toByte()
-                n = n ushr 7
+                buffer[i] = (nCopy and 0x7F or 0x80).toByte()
+                nCopy = nCopy ushr 7
             }
         }
 
         // Unpossible
-        throw IllegalArgumentException("Cannot represent $n as a varint in 16 bytes or less")
+        throw IllegalArgumentException("Cannot represent $nCopy as a varint in 16 bytes or less")
     }
 
     private fun writeVarint64(n: Long) {
-        var n = n
+        var nCopy = n
         for (i in buffer.indices) {
-            if (n and 0x7FL.inv() == 0x00L) {
-                buffer[i] = n.toByte()
+            if (nCopy and 0x7FL.inv() == 0x00L) {
+                buffer[i] = nCopy.toByte()
                 transport.write(buffer, 0, i + 1)
                 return
             } else {
-                buffer[i] = (n and 0x7F or 0x80).toByte()
-                n = n ushr 7
+                buffer[i] = (nCopy and 0x7F or 0x80).toByte()
+                nCopy = nCopy ushr 7
             }
         }
 
         // Unpossible
-        throw IllegalArgumentException("Cannot represent $n as a varint in 16 bytes or less")
+        throw IllegalArgumentException("Cannot represent $nCopy as a varint in 16 bytes or less")
     }
 
     override fun readMessageBegin(): MessageMetadata {
