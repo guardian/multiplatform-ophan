@@ -183,16 +183,16 @@ afterEvaluate {
                 name = "snapshot"
                 url = URI.create("https://oss.sonatype.org/content/repositories/snapshots/")
                 credentials {
-                    username = properties["ossrhUsername"] as String
-                    password = properties["ossrhPassword"] as String
+                    username = properties["ossrhUsername"] as? String
+                    password = properties["ossrhPassword"] as? String
                 }
             }
             maven {
                 name = "staging"
                 url = URI.create("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
                 credentials {
-                    username = properties["ossrhUsername"] as String
-                    password = properties["ossrhPassword"] as String
+                    username = properties["ossrhUsername"] as? String
+                    password = properties["ossrhPassword"] as? String
                 }
             }
         }
