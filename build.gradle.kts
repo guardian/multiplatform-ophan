@@ -1,5 +1,6 @@
 import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
+import java.net.URI
 
 plugins {
     //id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
@@ -177,6 +178,24 @@ afterEvaluate {
                     }
                 }
             }
+        repositories {
+            maven {
+                name = "snapshot"
+                url = URI.create("https://oss.sonatype.org/content/repositories/snapshots/")
+                credentials {
+                    username = properties["ossrhUsername"] as String
+                    password = properties["ossrhPassword"] as String
+                }
+            }
+            maven {
+                name = "staging"
+                url = URI.create("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                credentials {
+                    username = properties["ossrhUsername"] as String
+                    password = properties["ossrhPassword"] as String
+                }
+            }
+        }
     }
     signing {
         sign(publishing.publications)
