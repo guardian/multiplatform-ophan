@@ -1,4 +1,3 @@
-//import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
@@ -6,7 +5,7 @@ plugins {
     //id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
     kotlin("multiplatform") version "1.4.31"
     id("maven-publish")
-    //id("com.jfrog.bintray") version "1.8.4"
+    id("signing")
 }
 
 repositories {
@@ -178,6 +177,9 @@ afterEvaluate {
                     }
                 }
             }
+    }
+    signing {
+        sign(publishing.publications)
     }
 }
 
