@@ -20,7 +20,7 @@
  */
 package com.microsoft.thrifty.transport
 
-import kotlinx.io.core.IoBuffer
+import io.ktor.utils.io.core.*
 
 
 class BufferTransport(val b: IoBuffer) : Transport() {

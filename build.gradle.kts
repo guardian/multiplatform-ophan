@@ -1,9 +1,7 @@
-import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 import java.net.URI
 
 plugins {
-    //id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
     kotlin("multiplatform") version "1.4.31"
     id("maven-publish")
     id("signing")
@@ -11,12 +9,10 @@ plugins {
 
 repositories {
     mavenCentral()
-    //jcenter()
 }
 
 kotlin {
     jvm()
-    /*
     val iosX64 = iosX64("ios")
     val iosArm64 = iosArm64("iosArm64")
     val iosArm32 = iosArm32("iosArm32")
@@ -28,16 +24,15 @@ kotlin {
             baseName = frameworkName
         }
     }
-    */
 
     val coroutinesVersion = "1.4.3"
-    val ktorVersion = "1.2.3"
+    val ktorVersion = "1.5.3"
     val klockVersion = "2.1.0"
 
     sourceSets {
         named("commonMain") {
             dependencies {
-                //implementation(kotlin("stdlib-common"))
+                implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("com.soywiz.korlibs.klock:klock:$klockVersion")
@@ -51,8 +46,7 @@ kotlin {
         }
         named("jvmMain") {
             dependencies {
-                //implementation(kotlin("stdlib"))
-                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0-RC")
+                implementation(kotlin("stdlib"))
                 implementation("io.ktor:ktor-client-android:$ktorVersion")
             }
         }
@@ -62,11 +56,9 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
-        /*
         val iosMain by getting {
             dependencies {
-                //implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.0-RC")
-                implementation("io.ktor:ktor-client-ios:1.2.3")
+                implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
         }
         val iosArm64Main by getting {
@@ -74,14 +66,11 @@ kotlin {
         }
         val iosArm32Main by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-native:1.3.0-RC")
-                implementation("io.ktor:ktor-client-ios:1.2.3")
+                implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
         }
-        */
     }
 
-    /*
     val debugFatFramework by tasks.creating(FatFrameworkTask::class) {
         baseName = frameworkName
         from(
@@ -121,7 +110,6 @@ kotlin {
     publishing.publications.named<MavenPublication>("ios") {
         artifact(zipReleaseFatFramework)
     }
-    */
 }
 
 tasks.register<Exec>("generateThriftModels") {
