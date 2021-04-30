@@ -155,4 +155,47 @@ tasks.withType<BintrayUploadTask> {
     }
 }
 
+group = "com.gu.kotlin"
+version = "0.1.11"
+
+afterEvaluate {
+    publishing {
+        publications
+            .filterIsInstance<MavenPublication>()
+            .forEach { publication ->
+                //publication.groupId = "com.gu.kotlin"
+                //publication.artifactId = "multiplatform-ophan"
+                //publication.version = "0.1.11"
+                publication.pom {
+                    name.set("multiplatform-ophan")
+                    description.set("A Kotlin Multiplatform client library for Ophan.")
+                    url.set("https://github.com/guardian/multiplatform-ophan")
+                    packaging = "jar" // TODO: why doesn't this show up in the POM?
+                    licenses {
+                        license {
+                            name.set("The MIT License (MIT)")
+                            url.set("https://opensource.org/licenses/MIT")
+                        }
+                    }
+                    scm {
+                        connection.set("scm:git:git://github.com/guardian/toolargetool.git")
+                        developerConnection.set("scm:git:ssh://github.com/guardian/toolargetool.git")
+                        url.set("https://github.com/guardian/toolargetool")
+
+                    }
+                    developers {
+                        developer {
+                            id.set("maxspencer")
+                            name.set("Max Spencer")
+                            email.set("max.spencer@guardian.co.uk")
+                            url.set("https://github.com/maxspencer")
+                            organization.set("The Guardian")
+                            organizationUrl.set("https://theguardian.com")
+                        }
+                    }
+                }
+            }
+    }
+}
+
 //apply(from = "publish.gradle")
