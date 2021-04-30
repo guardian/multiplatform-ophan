@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 import java.net.URI
 
 plugins {
-    kotlin("multiplatform") version "1.4.31"
+    kotlin("multiplatform") version "1.4.32"
     id("maven-publish")
     id("signing")
 }
@@ -129,6 +129,21 @@ tasks.register<Exec>("generateThriftModels") {
 group = "com.gu.kotlin"
 version = "0.1.11"
 
+val emptyMainJar by tasks.creating(Jar::class) {
+    // For iOS outputs
+    //archiveClassifier.set("main")
+}
+
+val emptyJavadocTask by tasks.creating(Jar::class) {
+    // There are no docs here
+    archiveClassifier.set("javadoc")
+}
+
+val emptySourcesTask by tasks.creating(Jar::class) {
+    // No sources here
+    archiveClassifier.set("sources")
+}
+
 afterEvaluate {
     publishing {
         publications
@@ -137,6 +152,11 @@ afterEvaluate {
                 //publication.groupId = "com.gu.kotlin"
                 //publication.artifactId = "multiplatform-ophan"
                 //publication.version = "0.1.11"
+                publication.artifact(emptyJavadocTask)
+                if (publication.name.contains("ios")) {
+                    publication.artifact(emptyMainJar)
+                    //publication.artifact(emptySourcesTask)
+                }
                 publication.pom {
                     name.set("multiplatform-ophan")
                     description.set("A Kotlin Multiplatform client library for Ophan.")
