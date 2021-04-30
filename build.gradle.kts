@@ -2,13 +2,14 @@ import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 import java.net.URI
 
 plugins {
-    kotlin("multiplatform") version "1.4.32"
+    kotlin("multiplatform") version "1.3.41"
     id("maven-publish")
     id("signing")
 }
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 kotlin {
@@ -25,9 +26,9 @@ kotlin {
         }
     }
 
-    val coroutinesVersion = "1.4.3"
-    val ktorVersion = "1.5.3"
-    val klockVersion = "2.1.0"
+    val coroutinesVersion = "1.3.0"
+    val ktorVersion = "1.2.3"
+    val klockVersion = "1.5.0"
 
     sourceSets {
         named("commonMain") {
@@ -127,7 +128,7 @@ tasks.register<Exec>("generateThriftModels") {
 }
 
 group = "com.gu.kotlin"
-version = "0.2.0"
+version = "0.1.12"
 
 val emptyMainJar by tasks.creating(Jar::class) {
     // For iOS outputs
@@ -151,7 +152,7 @@ afterEvaluate {
             .forEach { publication ->
                 //publication.groupId = "com.gu.kotlin"
                 //publication.artifactId = "multiplatform-ophan"
-                //publication.version = "0.2.0"
+                //publication.version = "0.1.12"
                 publication.artifact(emptyJavadocTask)
                 if (publication.name.contains("ios")) {
                     publication.artifact(emptyMainJar)

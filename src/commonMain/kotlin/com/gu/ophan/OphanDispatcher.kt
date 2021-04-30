@@ -3,16 +3,20 @@ package com.gu.ophan
 import com.microsoft.thrifty.Struct
 import com.microsoft.thrifty.protocol.CompactProtocol
 import com.soywiz.klock.DateTime
-import com.microsoft.thrifty.transport.PacketInputTransport
-import com.microsoft.thrifty.transport.PacketTransport
-import io.ktor.client.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.utils.io.core.*
+import com.theguardian.tracksuite.com.microsoft.thrifty.transport.PacketInputTransport
+import com.theguardian.tracksuite.com.microsoft.thrifty.transport.PacketTransport
+import io.ktor.client.HttpClient
+import io.ktor.client.request.post
+import io.ktor.client.response.HttpResponse
+import io.ktor.client.response.readText
+import io.ktor.http.ContentType
+import io.ktor.http.content.ByteArrayContent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.io.core.ByteReadPacket
+import kotlinx.io.core.buildPacket
+import kotlinx.io.core.readBytes
+import kotlinx.io.core.use
 import ophan.thrift.nativeapp.App
 import ophan.thrift.nativeapp.Device
 import ophan.thrift.nativeapp.Event
@@ -114,7 +118,7 @@ class OphanDispatcher(
             }
         }
         logger?.debug("OphanDispatcher", response.readText())
-        logger?.debug("OphanDispatcher","It worked, the current version is 0.2.0")
+        logger?.debug("OphanDispatcher","It worked, the current version is 0.1.12")
         return response
     }
 

@@ -47,8 +47,11 @@ package com.microsoft.thrifty.protocol
 
 import com.microsoft.thrifty.TType
 import com.microsoft.thrifty.transport.Transport
-import io.ktor.utils.io.charsets.*
-import io.ktor.utils.io.core.*
+import kotlinx.io.charsets.Charset
+import kotlinx.io.charsets.Charsets
+import kotlinx.io.core.EOFException
+import kotlinx.io.core.String
+import kotlinx.io.core.toByteArray
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.native.concurrent.SharedImmutable
@@ -237,8 +240,8 @@ class CompactProtocol(transport: Transport) : Protocol(transport) {
         }
     }
 
-    private fun writeVarint32(intToWrite: Int) {
-        var n = intToWrite
+    private fun writeVarint32(n: Int) {
+        var n = n
         for (i in buffer.indices) {
             if (n and 0x7F.inv() == 0x00) {
                 buffer[i] = n.toByte()
@@ -254,8 +257,8 @@ class CompactProtocol(transport: Transport) : Protocol(transport) {
         throw IllegalArgumentException("Cannot represent $n as a varint in 16 bytes or less")
     }
 
-    private fun writeVarint64(longToWrite: Long) {
-        var n = longToWrite
+    private fun writeVarint64(n: Long) {
+        var n = n
         for (i in buffer.indices) {
             if (n and 0x7FL.inv() == 0x00L) {
                 buffer[i] = n.toByte()

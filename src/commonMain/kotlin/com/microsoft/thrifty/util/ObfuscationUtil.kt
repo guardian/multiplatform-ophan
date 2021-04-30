@@ -56,6 +56,6 @@ object ObfuscationUtil {
         hexChars[5] = HEX_CHARS[hashcode shr 8 and 0xF]
         hexChars[6] = HEX_CHARS[hashcode shr 4 and 0xF]
         hexChars[7] = HEX_CHARS[hashcode and 0xF]
-        return hexChars.concatToString()
+        return String(hexChars)
     }
 }// no instances

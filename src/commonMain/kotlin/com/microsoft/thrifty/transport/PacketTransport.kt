@@ -1,6 +1,8 @@
-package com.microsoft.thrifty.transport
+package com.theguardian.tracksuite.com.microsoft.thrifty.transport
 
-import io.ktor.utils.io.core.*
+import com.microsoft.thrifty.transport.Transport
+import kotlinx.io.core.BytePacketBuilder
+import kotlinx.io.core.ByteReadPacket
 
 class PacketTransport(private val packetBuilder: BytePacketBuilder): Transport() {
     override fun read(buffer: ByteArray, offset: Int, count: Int): Int {
