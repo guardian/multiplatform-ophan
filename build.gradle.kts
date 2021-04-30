@@ -127,7 +127,7 @@ tasks.register<Exec>("generateThriftModels") {
 }
 
 group = "com.gu.kotlin"
-version = "0.1.11"
+version = "0.2.0"
 
 val emptyMainJar by tasks.creating(Jar::class) {
     // For iOS outputs
@@ -151,7 +151,7 @@ afterEvaluate {
             .forEach { publication ->
                 //publication.groupId = "com.gu.kotlin"
                 //publication.artifactId = "multiplatform-ophan"
-                //publication.version = "0.1.11"
+                //publication.version = "0.2.0"
                 publication.artifact(emptyJavadocTask)
                 if (publication.name.contains("ios")) {
                     publication.artifact(emptyMainJar)
