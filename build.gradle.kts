@@ -1,4 +1,4 @@
-import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+//import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
 import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
 
@@ -6,12 +6,12 @@ plugins {
     //id("org.jetbrains.kotlin.multiplatform") version "1.3.41"
     kotlin("multiplatform") version "1.4.31"
     id("maven-publish")
-    id("com.jfrog.bintray") version "1.8.4"
+    //id("com.jfrog.bintray") version "1.8.4"
 }
 
 repositories {
     mavenCentral()
-    jcenter()
+    //jcenter()
 }
 
 kotlin {
@@ -32,7 +32,7 @@ kotlin {
 
     val coroutinesVersion = "1.4.3"
     val ktorVersion = "1.2.3"
-    val klockVersion = "1.5.0"
+    val klockVersion = "2.1.0"
 
     sourceSets {
         named("commonMain") {
@@ -136,23 +136,6 @@ tasks.register<Exec>("generateThriftModels") {
             "--path", "./thrift/",
             "./thrift/nativeapp.thrift"
     )
-}
-
-// This workaround makes bintrayUpload include the important .module files
-// https://github.com/bintray/gradle-bintray-plugin/issues/229#issuecomment-473123891
-tasks.withType<BintrayUploadTask> {
-    doFirst {
-        publishing.publications
-            .filterIsInstance<MavenPublication>()
-            .forEach { publication ->
-                val moduleFile = buildDir.resolve("publications/${publication.name}/module.json")
-                if (moduleFile.exists()) {
-                    publication.artifact(object : FileBasedMavenArtifact(moduleFile) {
-                        override fun getDefaultExtension() = "module"
-                    })
-                }
-            }
-    }
 }
 
 group = "com.gu.kotlin"
