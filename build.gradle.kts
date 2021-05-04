@@ -156,6 +156,9 @@ afterEvaluate {
                 if (publication.name.contains("ios")) {
                     publication.artifact(emptyMainJar)
                     //publication.artifact(emptySourcesTask)
+                } else if (publication.name == "kotlinMultiplatform") {
+                    publication.artifact(emptyMainJar)
+                    publication.artifact(emptySourcesTask)
                 }
                 publication.pom {
                     name.set("multiplatform-ophan")
