@@ -173,9 +173,9 @@ afterEvaluate {
                         }
                     }
                     scm {
-                        connection.set("scm:git:git://github.com/guardian/toolargetool.git")
-                        developerConnection.set("scm:git:ssh://github.com/guardian/toolargetool.git")
-                        url.set("https://github.com/guardian/toolargetool")
+                        connection.set("scm:git:git://github.com/guardian/multiplatform-ophan.git")
+                        developerConnection.set("scm:git:ssh://github.com/guardian/multiplatform-ophan.git")
+                        url.set("https://github.com/guardian/multiplatform-ophan")
 
                     }
                     developers {
