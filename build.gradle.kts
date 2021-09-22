@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.FatFrameworkTask
-import java.net.URI
 
 plugins {
     kotlin("multiplatform") version "1.4.32"
@@ -126,9 +125,6 @@ tasks.register<Exec>("generateThriftModels") {
     )
 }
 
-group = "com.gu.kotlin"
-version = "0.2.0"
-
 val emptyMainJar by tasks.creating(Jar::class) {
     // For iOS outputs
     //archiveClassifier.set("main")
@@ -146,20 +142,20 @@ val emptySourcesTask by tasks.creating(Jar::class) {
 
 afterEvaluate {
     publishing {
+        val isSnapshot = project.hasProperty("snapshot")
+
         publications
             .filterIsInstance<MavenPublication>()
             .forEach { publication ->
-                //publication.groupId = "com.gu.kotlin"
-                //publication.artifactId = "multiplatform-ophan"
-                //publication.version = "0.2.0"
+                publication.groupId = "com.gu.kotlin"
+                publication.version = "0.2.0" + if (isSnapshot) "-SNAPSHOT" else ""
+
+                // Add artifacts required by Sonatype:
                 publication.artifact(emptyJavadocTask)
                 if (publication.name.contains("ios")) {
                     publication.artifact(emptyMainJar)
-                    //publication.artifact(emptySourcesTask)
-                } else if (publication.name == "kotlinMultiplatform") {
-                    publication.artifact(emptyMainJar)
-                    publication.artifact(emptySourcesTask)
                 }
+
                 publication.pom {
                     name.set("multiplatform-ophan")
                     description.set("A Kotlin Multiplatform client library for Ophan.")
@@ -189,18 +185,15 @@ afterEvaluate {
                     }
                 }
             }
+
         repositories {
             maven {
-                name = "snapshot"
-                url = URI.create("https://oss.sonatype.org/content/repositories/snapshots/")
-                credentials {
-                    username = properties["ossrhUsername"] as? String
-                    password = properties["ossrhPassword"] as? String
-                }
-            }
-            maven {
-                name = "staging"
-                url = URI.create("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+                name = "Sonatype"
+                url = uri("https://oss.sonatype.org" + if(isSnapshot) {
+                    "/content/repositories/snapshots/"
+                } else {
+                    "/service/local/staging/deploy/maven2/"
+                })
                 credentials {
                     username = properties["ossrhUsername"] as? String
                     password = properties["ossrhPassword"] as? String
@@ -208,9 +201,16 @@ afterEvaluate {
             }
         }
     }
+
     signing {
+        if (project.hasProperty("useInMemoryPgpKeys")) {
+            val signingKey: String? by project
+            val signingKeyPassword: String? by project
+            if (signingKey.isNullOrEmpty() || signingKeyPassword.isNullOrEmpty()) {
+                logger.log(LogLevel.ERROR, "The useInMemoryPgpKeys property was set but signingKey and/or signingKeyPassword are missing")
+            }
+            useInMemoryPgpKeys(signingKey, signingKeyPassword)
+        }
         sign(publishing.publications)
     }
 }
-
-//apply(from = "publish.gradle")
