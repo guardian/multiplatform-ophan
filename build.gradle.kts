@@ -148,7 +148,7 @@ afterEvaluate {
             .filterIsInstance<MavenPublication>()
             .forEach { publication ->
                 publication.groupId = "com.gu.kotlin"
-                publication.version = "0.2.0" + if (isSnapshot) "-SNAPSHOT" else ""
+                publication.version = "0.2.1" + if (isSnapshot) "-SNAPSHOT" else ""
 
                 // Add artifacts required by Sonatype:
                 publication.artifact(emptyJavadocTask)

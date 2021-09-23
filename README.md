@@ -5,7 +5,7 @@ A Kotlin Multiplatform client library for Ophan. Available for Android, iOS, and
 ## Adding as a dependency
 
 The most recent version is `0.2.0`
-Snapshot version: `0.2.0-SNAPSHOT`
+Snapshot version: `0.2.1-SNAPSHOT`
 
 ### Android
     
@@ -82,5 +82,5 @@ After making a release (with the `Publish release` workflow) please follow these
    a. in [README.md]:
       i. the "most recent version" should be the `<version>` that was just released, and
       ii. the "snapshot version" should be the `<new-version>` that will succeed `<version>`
-   b. and in [build.gradle.kts] all version numbers should be changed to `<new-version>`.
+   b. and everywhere else all version numbers should be changed to `<new-version>`.
 3. Commit and push and a `<new-version>-SNAPSHOT` will be published automatically. 
