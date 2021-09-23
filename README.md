@@ -69,18 +69,19 @@ _TODO: Add more detail here!_
 GitHub Actions are used to publish this library. The credentials required for signing and publishing builds are stored
 as repository secrets.
 
-* The `Publish snapshot` workflow publishes a snapshot to Sonatype's
+* The [Publish snapshot](https://github.com/guardian/multiplatform-ophan/actions/workflows/publish-snapshot.yml)
+  workflow publishes a snapshot to Sonatype's
   [snapshot repo](https://oss.sonatype.org/content/repositories/snapshots/com/gu/kotlin/) automatically each time
   `main` is changed.
-* The `Publish release` workflow is invoked manually and publishes to Sonatype's staging repo, from which it can be
-  pushed into [Maven Central](https://search.maven.org/search?q=com.gu.kotlin).
+* The [Publish release](https://github.com/guardian/multiplatform-ophan/actions/workflows/publish-release.yml)
+  workflow is invoked manually and publishes to Sonatype's staging repo, from which it can be pushed into
+  [Maven Central](https://search.maven.org/search?q=com.gu.kotlin).
 
 After making a release (with the `Publish release` workflow) please follow these additional steps:
 
 1. Tag the commit which was released with `git tag -a v<version> -m "<message>"
 2. Use find-replace to update all version numbers in the repo:
-   a. in [README.md]:
-      i. the "most recent version" should be the `<version>` that was just released, and
-      ii. the "snapshot version" should be the `<new-version>` that will succeed `<version>`
-   b. and everywhere else all version numbers should be changed to `<new-version>`.
+    * in [README.md] the "most recent version" should be the `<version>` that was just released, and 
+      the "snapshot version" should be the `<new-version>` that will succeed `<version>`
+    * and everywhere else all version numbers should be changed to `<new-version>`.
 3. Commit and push and a `<new-version>-SNAPSHOT` will be published automatically. 
