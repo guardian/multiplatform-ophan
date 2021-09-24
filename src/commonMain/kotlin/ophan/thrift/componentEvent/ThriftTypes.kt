@@ -72,7 +72,17 @@ enum class Action(@JvmField val value: Int) {
      * A single click on the component which is not covered by
      * any of the existing Actions.
      */
-    CLICK(9);
+    CLICK(9),
+
+    /**
+     * User sign in to Guardian Identity account
+     */
+    SIGN_IN(10),
+
+    /**
+     * User creates a Guardian Identity account
+     */
+    CREATE_ACCOUNT(11);
 
     companion object {
         @JvmStatic
@@ -86,6 +96,8 @@ enum class Action(@JvmField val value: Int) {
             7 -> ANSWER
             8 -> VOTE
             9 -> CLICK
+            10 -> SIGN_IN
+            11 -> CREATE_ACCOUNT
             else -> null
         }
     }
@@ -167,7 +179,21 @@ enum class ComponentType(@JvmField val value: Int) {
 
     ACQUISITIONS_MERCHANDISING(36),
 
-    ACQUISITIONS_HOUSE_ADS(37);
+    ACQUISITIONS_HOUSE_ADS(37),
+
+    SIGN_IN_GATE(38),
+
+    ACQUISITIONS_SUBSCRIPTIONS_BANNER(39),
+
+    MOBILE_STICKY_AD(40),
+
+    IDENTITY_AUTHENTICATION(41),
+
+    RETENTION_ENGAGEMENT_BANNER(42),
+
+    ACQUISITION_SUPPORT_SITE(43),
+
+    RETENTION_EPIC(44);
 
     companion object {
         @JvmStatic
@@ -209,6 +235,13 @@ enum class ComponentType(@JvmField val value: Int) {
             35 -> CHART_ATOM
             36 -> ACQUISITIONS_MERCHANDISING
             37 -> ACQUISITIONS_HOUSE_ADS
+            38 -> SIGN_IN_GATE
+            39 -> ACQUISITIONS_SUBSCRIPTIONS_BANNER
+            40 -> MOBILE_STICKY_AD
+            41 -> IDENTITY_AUTHENTICATION
+            42 -> RETENTION_ENGAGEMENT_BANNER
+            43 -> ACQUISITION_SUPPORT_SITE
+            44 -> RETENTION_EPIC
             else -> null
         }
     }

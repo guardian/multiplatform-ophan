@@ -100,7 +100,9 @@ enum class SignificantSite(@JvmField val value: Int) {
 
     UPDAY(21),
 
-    SMART_NEWS(22);
+    SMART_NEWS(22),
+
+    NEWS_BREAK(23);
 
     companion object {
         @JvmStatic
@@ -128,6 +130,7 @@ enum class SignificantSite(@JvmField val value: Int) {
             20 -> IN_SHORTS
             21 -> UPDAY
             22 -> SMART_NEWS
+            23 -> NEWS_BREAK
             else -> null
         }
     }
@@ -408,7 +411,11 @@ enum class PaymentProvider(@JvmField val value: Int) {
 
     STRIPE_PAYMENT_REQUEST_BUTTON(6),
 
-    SUBSCRIBE_WITH_GOOGLE(7);
+    SUBSCRIBE_WITH_GOOGLE(7),
+
+    AMAZON_PAY(8),
+
+    STRIPE_SEPA(9);
 
     companion object {
         @JvmStatic
@@ -420,6 +427,8 @@ enum class PaymentProvider(@JvmField val value: Int) {
             5 -> STRIPE_APPLE_PAY
             6 -> STRIPE_PAYMENT_REQUEST_BUTTON
             7 -> SUBSCRIBE_WITH_GOOGLE
+            8 -> AMAZON_PAY
+            9 -> STRIPE_SEPA
             else -> null
         }
     }
@@ -445,7 +454,13 @@ enum class AcquisitionSource(@JvmField val value: Int) {
 
     GUARDIAN_APP_IOS(8),
 
-    GUARDIAN_APP_ANDROID(9);
+    GUARDIAN_APP_ANDROID(9),
+
+    APPLE_NEWS(10),
+
+    GOOGLE_AMP(11),
+
+    YOUTUBE(12);
 
     companion object {
         @JvmStatic
@@ -459,6 +474,9 @@ enum class AcquisitionSource(@JvmField val value: Int) {
             7 -> DIRECT
             8 -> GUARDIAN_APP_IOS
             9 -> GUARDIAN_APP_ANDROID
+            10 -> APPLE_NEWS
+            11 -> GOOGLE_AMP
+            12 -> YOUTUBE
             else -> null
         }
     }
@@ -2594,5 +2612,95 @@ data class QueryParameter(@JvmField @ThriftField(fieldId = 1, isRequired = true)
     companion object {
         @JvmField
         val ADAPTER: Adapter<QueryParameter, Builder> = QueryParameterAdapter()
+    }
+}
+
+data class InPageClick(@JvmField @ThriftField(fieldId = 1, isOptional = true) val component: String?, @JvmField @ThriftField(fieldId = 2, isOptional = true) val linkName: LinkName?) : Struct {
+    override fun write(protocol: Protocol) {
+        ADAPTER.write(protocol, this)
+    }
+
+    class Builder : StructBuilder<InPageClick> {
+        private var component: String? = null
+
+        private var linkName: LinkName? = null
+
+        constructor() {
+            this.component = null
+            this.linkName = null
+        }
+
+        constructor(source: InPageClick) {
+            this.component = source.component
+            this.linkName = source.linkName
+        }
+
+        fun component(component: String?) = apply { this.component = component }
+
+        fun linkName(linkName: LinkName?) = apply { this.linkName = linkName }
+
+        override fun build(): InPageClick = InPageClick(component = this.component,
+                linkName = this.linkName)
+        override fun reset() {
+            this.component = null
+            this.linkName = null
+        }
+    }
+
+    private class InPageClickAdapter : Adapter<InPageClick, Builder> {
+        override fun read(protocol: Protocol) = read(protocol, Builder())
+
+        override fun read(protocol: Protocol, builder: Builder): InPageClick {
+            protocol.readStructBegin()
+            while (true) {
+                val fieldMeta = protocol.readFieldBegin()
+                if (fieldMeta.typeId == TType.STOP) {
+                    break
+                }
+                when (fieldMeta.fieldId.toInt()) {
+                    1 -> {
+                        if (fieldMeta.typeId == TType.STRING) {
+                            val component = protocol.readString()
+                            builder.component(component)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    2 -> {
+                        if (fieldMeta.typeId == TType.STRUCT) {
+                            val linkName = LinkName.ADAPTER.read(protocol)
+                            builder.linkName(linkName)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                }
+                protocol.readFieldEnd()
+            }
+            protocol.readStructEnd()
+            return builder.build()
+        }
+
+        override fun write(protocol: Protocol, struct: InPageClick) {
+            protocol.writeStructBegin("InPageClick")
+            if (struct.component != null) {
+                protocol.writeFieldBegin("component", 1, TType.STRING)
+                protocol.writeString(struct.component)
+                protocol.writeFieldEnd()
+            }
+            if (struct.linkName != null) {
+                protocol.writeFieldBegin("linkName", 2, TType.STRUCT)
+                LinkName.ADAPTER.write(protocol, struct.linkName)
+                protocol.writeFieldEnd()
+            }
+            protocol.writeFieldStop()
+            protocol.writeStructEnd()
+        }
+    }
+
+    companion object {
+        @JvmField
+        val ADAPTER: Adapter<InPageClick, Builder> = InPageClickAdapter()
     }
 }
