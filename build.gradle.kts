@@ -4,6 +4,7 @@ plugins {
     kotlin("multiplatform") version "1.4.32"
     id("maven-publish")
     id("signing")
+    id("de.undercouch.download") version "4.1.2"
 }
 
 repositories {
@@ -111,7 +112,23 @@ kotlin {
     }
 }
 
+val ophanEventModelVersion = "0.0.23"
+
+tasks.register<de.undercouch.gradle.tasks.download.Download>("downloadThriftModels") {
+    src("https://repo1.maven.org/maven2/com/gu/ophan-event-model_2.12/$ophanEventModelVersion/ophan-event-model_2.12-$ophanEventModelVersion.jar")
+    dest(buildDir)
+
+}
+
+tasks.register<Copy>("extractThriftModels") {
+    dependsOn("downloadThriftModels")
+    from(zipTree("$buildDir/ophan-event-model_2.12-$ophanEventModelVersion.jar"))
+    include("**/*.thrift")
+    into("$buildDir/thrift")
+}
+
 tasks.register<Exec>("generateThriftModels") {
+    dependsOn("extractThriftModels")
     executable = "java"
     args(
             "-jar", "thrifty-compiler.jar",
@@ -120,8 +137,8 @@ tasks.register<Exec>("generateThriftModels") {
             "--list-type=kotlin.collections.ArrayList",
             "--set-type=kotlin.collections.LinkedHashSet",
             "--out", "src/commonMain/kotlin",
-            "--path", "./thrift/",
-            "./thrift/nativeapp.thrift"
+            "--path", "$buildDir/thrift/ophan-event-model/",
+            "$buildDir/thrift/ophan-event-model/nativeapp.thrift"
     )
 }
 
@@ -139,6 +156,8 @@ val emptySourcesTask by tasks.creating(Jar::class) {
     // No sources here
     archiveClassifier.set("sources")
 }
+
+
 
 afterEvaluate {
     publishing {

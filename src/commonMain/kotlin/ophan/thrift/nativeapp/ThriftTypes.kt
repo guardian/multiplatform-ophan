@@ -21,6 +21,7 @@ import ophan.thrift.componentEvent.ComponentEvent
 import ophan.thrift.device.DeviceClass
 import ophan.thrift.event.AbTestInfo
 import ophan.thrift.event.Acquisition
+import ophan.thrift.event.InPageClick
 import ophan.thrift.event.Interaction
 import ophan.thrift.event.MediaPlayback
 import ophan.thrift.event.Platform
@@ -69,7 +70,12 @@ enum class EventType(@JvmField val value: Int) {
     /**
      * The event contains information about acquisitions.
      */
-    ACQUISITION(7);
+    ACQUISITION(7),
+
+    /**
+     * The event contains information about an in-page click
+     */
+    IN_PAGE_CLICK(8);
 
     companion object {
         @JvmStatic
@@ -82,6 +88,7 @@ enum class EventType(@JvmField val value: Int) {
             5 -> AB_TEST
             6 -> COMPONENT_EVENT
             7 -> ACQUISITION
+            8 -> IN_PAGE_CLICK
             else -> null
         }
     }
@@ -399,7 +406,8 @@ data class Event(
     @JvmField @ThriftField(fieldId = 18, isOptional = true) val url: Url?,
     @JvmField @ThriftField(fieldId = 19, isOptional = true) val renderedComponents: List<String>?,
     @JvmField @ThriftField(fieldId = 20, isOptional = true) val componentEvent: ComponentEvent?,
-    @JvmField @ThriftField(fieldId = 21, isOptional = true) val acquisition: Acquisition?
+    @JvmField @ThriftField(fieldId = 21, isOptional = true) val acquisition: Acquisition?,
+    @JvmField @ThriftField(fieldId = 23, isOptional = true) val inPageClick: InPageClick?
 ) : Struct {
     override fun write(protocol: Protocol) {
         ADAPTER.write(protocol, this)
@@ -450,6 +458,8 @@ data class Event(
 
         private var acquisition: Acquisition? = null
 
+        private var inPageClick: InPageClick? = null
+
         constructor() {
             this.eventType = ophan.thrift.nativeapp.EventType.VIEW
             this.eventId = null
@@ -473,6 +483,7 @@ data class Event(
             this.renderedComponents = null
             this.componentEvent = null
             this.acquisition = null
+            this.inPageClick = null
         }
 
         constructor(source: Event) {
@@ -498,6 +509,7 @@ data class Event(
             this.renderedComponents = source.renderedComponents
             this.componentEvent = source.componentEvent
             this.acquisition = source.acquisition
+            this.inPageClick = source.inPageClick
         }
 
         fun eventType(eventType: EventType?) = apply { this.eventType = eventType }
@@ -544,6 +556,8 @@ data class Event(
 
         fun acquisition(acquisition: Acquisition?) = apply { this.acquisition = acquisition }
 
+        fun inPageClick(inPageClick: InPageClick?) = apply { this.inPageClick = inPageClick }
+
         override fun build(): Event = Event(eventType = this.eventType,
                 eventId = checkNotNull(eventId) { "Required field 'eventId' is missing" },
                 viewId = this.viewId, ageMsLong = this.ageMsLong, ageMs = this.ageMs,
@@ -554,7 +568,8 @@ data class Event(
                 attentionMs = this.attentionMs, scrollDepth = this.scrollDepth, media = this.media,
                 ab = this.ab, interaction = this.interaction, referrer = this.referrer,
                 url = this.url, renderedComponents = this.renderedComponents,
-                componentEvent = this.componentEvent, acquisition = this.acquisition)
+                componentEvent = this.componentEvent, acquisition = this.acquisition,
+                inPageClick = this.inPageClick)
         override fun reset() {
             this.eventType = ophan.thrift.nativeapp.EventType.VIEW
             this.eventId = null
@@ -578,6 +593,7 @@ data class Event(
             this.renderedComponents = null
             this.componentEvent = null
             this.acquisition = null
+            this.inPageClick = null
         }
     }
 
@@ -778,6 +794,14 @@ data class Event(
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
                     }
+                    23 -> {
+                        if (fieldMeta.typeId == TType.STRUCT) {
+                            val inPageClick = InPageClick.ADAPTER.read(protocol)
+                            builder.inPageClick(inPageClick)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
                     else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
                 }
                 protocol.readFieldEnd()
@@ -898,6 +922,11 @@ data class Event(
             if (struct.acquisition != null) {
                 protocol.writeFieldBegin("acquisition", 21, TType.STRUCT)
                 Acquisition.ADAPTER.write(protocol, struct.acquisition)
+                protocol.writeFieldEnd()
+            }
+            if (struct.inPageClick != null) {
+                protocol.writeFieldBegin("inPageClick", 23, TType.STRUCT)
+                InPageClick.ADAPTER.write(protocol, struct.inPageClick)
                 protocol.writeFieldEnd()
             }
             protocol.writeFieldStop()
@@ -1193,13 +1222,13 @@ data class Device(
 /**
  * This is the root object that represents a tracking submission from native apps.
  *
- * This can be supplied to ophan in one of two ways:
+ * This can be supplied to Ophan in one of two ways:
  *
  * <ol>
  *   <li>Create the equivalent json and POST the json to https://ophan.theguardian.com/mob with a content type
  *   of application/json</li>
  *   <li>Create a thift binary blob in compact binary protocol format from
- *   <a href="https://github.com/guardian/ophan/blob/master/event-model/src/main/thrift/nativeapp.thrift">this definition</a>
+ *   <a href="https://github.com/guardian/ophan/blob/main/event-model/src/main/thrift/nativeapp.thrift">this definition</a>
  *   and POST to
  *   https://ophan.theguardian.com/mob a content type of application/vnd.apache.thrift.compact</li>
  * </ol>
