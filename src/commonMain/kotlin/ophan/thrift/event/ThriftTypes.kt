@@ -1125,6 +1125,94 @@ data class Interaction(
     }
 }
 
+data class AppReferral(@JvmField @ThriftField(fieldId = 1, isRequired = true) val raw: String, @JvmField @ThriftField(fieldId = 2, isOptional = true) val appId: String?) : Struct {
+    override fun write(protocol: Protocol) {
+        ADAPTER.write(protocol, this)
+    }
+
+    class Builder : StructBuilder<AppReferral> {
+        private var raw: String? = null
+
+        private var appId: String? = null
+
+        constructor() {
+            this.raw = null
+            this.appId = null
+        }
+
+        constructor(source: AppReferral) {
+            this.raw = source.raw
+            this.appId = source.appId
+        }
+
+        fun raw(raw: String) = apply { this.raw = raw }
+
+        fun appId(appId: String?) = apply { this.appId = appId }
+
+        override fun build(): AppReferral = AppReferral(raw = checkNotNull(raw) { "Required field 'raw' is missing" },
+                appId = this.appId)
+        override fun reset() {
+            this.raw = null
+            this.appId = null
+        }
+    }
+
+    private class AppReferralAdapter : Adapter<AppReferral, Builder> {
+        override fun read(protocol: Protocol) = read(protocol, Builder())
+
+        override fun read(protocol: Protocol, builder: Builder): AppReferral {
+            protocol.readStructBegin()
+            while (true) {
+                val fieldMeta = protocol.readFieldBegin()
+                if (fieldMeta.typeId == TType.STOP) {
+                    break
+                }
+                when (fieldMeta.fieldId.toInt()) {
+                    1 -> {
+                        if (fieldMeta.typeId == TType.STRING) {
+                            val raw = protocol.readString()
+                            builder.raw(raw)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    2 -> {
+                        if (fieldMeta.typeId == TType.STRING) {
+                            val appId = protocol.readString()
+                            builder.appId(appId)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
+                    else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                }
+                protocol.readFieldEnd()
+            }
+            protocol.readStructEnd()
+            return builder.build()
+        }
+
+        override fun write(protocol: Protocol, struct: AppReferral) {
+            protocol.writeStructBegin("AppReferral")
+            protocol.writeFieldBegin("raw", 1, TType.STRING)
+            protocol.writeString(struct.raw)
+            protocol.writeFieldEnd()
+            if (struct.appId != null) {
+                protocol.writeFieldBegin("appId", 2, TType.STRING)
+                protocol.writeString(struct.appId)
+                protocol.writeFieldEnd()
+            }
+            protocol.writeFieldStop()
+            protocol.writeStructEnd()
+        }
+    }
+
+    companion object {
+        @JvmField
+        val ADAPTER: Adapter<AppReferral, Builder> = AppReferralAdapter()
+    }
+}
+
 /**
  * Information about the referrer - previous page - that the reader navigated to
  * this one from.
@@ -1138,7 +1226,8 @@ data class Referrer(
     @JvmField @ThriftField(fieldId = 7, isOptional = true) val email: String?,
     @JvmField @ThriftField(fieldId = 8, isOptional = true) val nativeAppSource: Source?,
     @JvmField @ThriftField(fieldId = 9, isOptional = true) val google: GoogleReferral?,
-    @JvmField @ThriftField(fieldId = 11, isOptional = true) val tagIdFollowed: String?
+    @JvmField @ThriftField(fieldId = 11, isOptional = true) val tagIdFollowed: String?,
+    @JvmField @ThriftField(fieldId = 12, isOptional = true) val appReferral: AppReferral?
 ) : Struct {
     override fun write(protocol: Protocol) {
         ADAPTER.write(protocol, this)
@@ -1163,6 +1252,8 @@ data class Referrer(
 
         private var tagIdFollowed: String? = null
 
+        private var appReferral: AppReferral? = null
+
         constructor() {
             this.url = null
             this.component = null
@@ -1173,6 +1264,7 @@ data class Referrer(
             this.nativeAppSource = null
             this.google = null
             this.tagIdFollowed = null
+            this.appReferral = null
         }
 
         constructor(source: Referrer) {
@@ -1185,6 +1277,7 @@ data class Referrer(
             this.nativeAppSource = source.nativeAppSource
             this.google = source.google
             this.tagIdFollowed = source.tagIdFollowed
+            this.appReferral = source.appReferral
         }
 
         fun url(url: Url?) = apply { this.url = url }
@@ -1205,10 +1298,12 @@ data class Referrer(
 
         fun tagIdFollowed(tagIdFollowed: String?) = apply { this.tagIdFollowed = tagIdFollowed }
 
+        fun appReferral(appReferral: AppReferral?) = apply { this.appReferral = appReferral }
+
         override fun build(): Referrer = Referrer(url = this.url, component = this.component,
                 linkName = this.linkName, platform = this.platform, viewId = this.viewId,
                 email = this.email, nativeAppSource = this.nativeAppSource, google = this.google,
-                tagIdFollowed = this.tagIdFollowed)
+                tagIdFollowed = this.tagIdFollowed, appReferral = this.appReferral)
         override fun reset() {
             this.url = null
             this.component = null
@@ -1219,6 +1314,7 @@ data class Referrer(
             this.nativeAppSource = null
             this.google = null
             this.tagIdFollowed = null
+            this.appReferral = null
         }
     }
 
@@ -1309,6 +1405,14 @@ data class Referrer(
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
                     }
+                    12 -> {
+                        if (fieldMeta.typeId == TType.STRUCT) {
+                            val appReferral = AppReferral.ADAPTER.read(protocol)
+                            builder.appReferral(appReferral)
+                        } else {
+                            ProtocolUtil.skip(protocol, fieldMeta.typeId)
+                        }
+                    }
                     else -> ProtocolUtil.skip(protocol, fieldMeta.typeId)
                 }
                 protocol.readFieldEnd()
@@ -1362,6 +1466,11 @@ data class Referrer(
             if (struct.tagIdFollowed != null) {
                 protocol.writeFieldBegin("tagIdFollowed", 11, TType.STRING)
                 protocol.writeString(struct.tagIdFollowed)
+                protocol.writeFieldEnd()
+            }
+            if (struct.appReferral != null) {
+                protocol.writeFieldBegin("appReferral", 12, TType.STRUCT)
+                AppReferral.ADAPTER.write(protocol, struct.appReferral)
                 protocol.writeFieldEnd()
             }
             protocol.writeFieldStop()
