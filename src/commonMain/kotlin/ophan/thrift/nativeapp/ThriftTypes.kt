@@ -391,8 +391,8 @@ data class Event(
     @JvmField @ThriftField(fieldId = 22, isOptional = true) val ageMsLong: Long?,
     @JvmField @ThriftField(fieldId = 2, isOptional = true) val ageMs: Int? = 0,
     @JvmField @ThriftField(fieldId = 4, isOptional = true) val path: String?,
-    @JvmField @ThriftField(fieldId = 5, isOptional = true) val previousPath: String?,
-    @JvmField @ThriftField(fieldId = 6, isOptional = true) val referringSource: Source?,
+    @JvmField @ThriftField(fieldId = 5, isOptional = true) val OBSOLETE_previousPath: String?,
+    @JvmField @ThriftField(fieldId = 6, isOptional = true) val OBSOLETE_referringSource: Source?,
     @JvmField @ThriftField(fieldId = 7, isOptional = true) val pushNotificationId: String?,
     @JvmField @ThriftField(fieldId = 8, isOptional = true) val adLoad: RenderedAd?,
     @JvmField @ThriftField(fieldId = 10, isOptional = true) val benchmark: BenchmarkData?,
@@ -426,9 +426,9 @@ data class Event(
 
         private var path: String? = null
 
-        private var previousPath: String? = null
+        private var OBSOLETE_previousPath: String? = null
 
-        private var referringSource: Source? = null
+        private var OBSOLETE_referringSource: Source? = null
 
         private var pushNotificationId: String? = null
 
@@ -467,8 +467,8 @@ data class Event(
             this.ageMsLong = null
             this.ageMs = 0
             this.path = null
-            this.previousPath = null
-            this.referringSource = null
+            this.OBSOLETE_previousPath = null
+            this.OBSOLETE_referringSource = null
             this.pushNotificationId = null
             this.adLoad = null
             this.benchmark = null
@@ -493,8 +493,8 @@ data class Event(
             this.ageMsLong = source.ageMsLong
             this.ageMs = source.ageMs
             this.path = source.path
-            this.previousPath = source.previousPath
-            this.referringSource = source.referringSource
+            this.OBSOLETE_previousPath = source.OBSOLETE_previousPath
+            this.OBSOLETE_referringSource = source.OBSOLETE_referringSource
             this.pushNotificationId = source.pushNotificationId
             this.adLoad = source.adLoad
             this.benchmark = source.benchmark
@@ -524,9 +524,9 @@ data class Event(
 
         fun path(path: String?) = apply { this.path = path }
 
-        fun previousPath(previousPath: String?) = apply { this.previousPath = previousPath }
+        fun OBSOLETE_previousPath(OBSOLETE_previousPath: String?) = apply { this.OBSOLETE_previousPath = OBSOLETE_previousPath }
 
-        fun referringSource(referringSource: Source?) = apply { this.referringSource = referringSource }
+        fun OBSOLETE_referringSource(OBSOLETE_referringSource: Source?) = apply { this.OBSOLETE_referringSource = OBSOLETE_referringSource }
 
         fun pushNotificationId(pushNotificationId: String?) = apply { this.pushNotificationId = pushNotificationId }
 
@@ -561,8 +561,8 @@ data class Event(
         override fun build(): Event = Event(eventType = this.eventType,
                 eventId = checkNotNull(eventId) { "Required field 'eventId' is missing" },
                 viewId = this.viewId, ageMsLong = this.ageMsLong, ageMs = this.ageMs,
-                path = this.path, previousPath = this.previousPath,
-                referringSource = this.referringSource,
+                path = this.path, OBSOLETE_previousPath = this.OBSOLETE_previousPath,
+                OBSOLETE_referringSource = this.OBSOLETE_referringSource,
                 pushNotificationId = this.pushNotificationId, adLoad = this.adLoad,
                 benchmark = this.benchmark, networkOperation = this.networkOperation,
                 attentionMs = this.attentionMs, scrollDepth = this.scrollDepth, media = this.media,
@@ -577,8 +577,8 @@ data class Event(
             this.ageMsLong = null
             this.ageMs = 0
             this.path = null
-            this.previousPath = null
-            this.referringSource = null
+            this.OBSOLETE_previousPath = null
+            this.OBSOLETE_referringSource = null
             this.pushNotificationId = null
             this.adLoad = null
             this.benchmark = null
@@ -660,18 +660,18 @@ data class Event(
                     }
                     5 -> {
                         if (fieldMeta.typeId == TType.STRING) {
-                            val previousPath = protocol.readString()
-                            builder.previousPath(previousPath)
+                            val OBSOLETE_previousPath = protocol.readString()
+                            builder.OBSOLETE_previousPath(OBSOLETE_previousPath)
                         } else {
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
                     }
                     6 -> {
                         if (fieldMeta.typeId == TType.I32) {
-                            val referringSource = protocol.readI32().let {
+                            val OBSOLETE_referringSource = protocol.readI32().let {
                                 Source.findByValue(it) ?: throw ThriftException(ThriftException.Kind.PROTOCOL_ERROR, "Unexpected value for enum type Source: $it")
                             }
-                            builder.referringSource(referringSource)
+                            builder.OBSOLETE_referringSource(OBSOLETE_referringSource)
                         } else {
                             ProtocolUtil.skip(protocol, fieldMeta.typeId)
                         }
@@ -840,14 +840,14 @@ data class Event(
                 protocol.writeString(struct.path)
                 protocol.writeFieldEnd()
             }
-            if (struct.previousPath != null) {
-                protocol.writeFieldBegin("previousPath", 5, TType.STRING)
-                protocol.writeString(struct.previousPath)
+            if (struct.OBSOLETE_previousPath != null) {
+                protocol.writeFieldBegin("OBSOLETE_previousPath", 5, TType.STRING)
+                protocol.writeString(struct.OBSOLETE_previousPath)
                 protocol.writeFieldEnd()
             }
-            if (struct.referringSource != null) {
-                protocol.writeFieldBegin("referringSource", 6, TType.I32)
-                protocol.writeI32(struct.referringSource.value)
+            if (struct.OBSOLETE_referringSource != null) {
+                protocol.writeFieldBegin("OBSOLETE_referringSource", 6, TType.I32)
+                protocol.writeI32(struct.OBSOLETE_referringSource.value)
                 protocol.writeFieldEnd()
             }
             if (struct.pushNotificationId != null) {

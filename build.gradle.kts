@@ -115,20 +115,20 @@ kotlin {
 val ophanEventModelVersion = "0.0.23"
 
 tasks.register<de.undercouch.gradle.tasks.download.Download>("downloadThriftModels") {
-    src("https://repo1.maven.org/maven2/com/gu/ophan-event-model_2.12/$ophanEventModelVersion/ophan-event-model_2.12-$ophanEventModelVersion.jar")
+    src("https://repo1.maven.org/maven2/com/gu/ophan-event-model_2.13/$ophanEventModelVersion/ophan-event-model_2.13-$ophanEventModelVersion.jar")
     dest(buildDir)
 
 }
 
 tasks.register<Copy>("extractThriftModels") {
     dependsOn("downloadThriftModels")
-    from(zipTree("$buildDir/ophan-event-model_2.12-$ophanEventModelVersion.jar"))
+    from(zipTree("$buildDir/ophan-event-model_2.13-$ophanEventModelVersion.jar"))
     include("**/*.thrift")
     into("$buildDir/thrift")
 }
 
 tasks.register<Exec>("generateThriftModels") {
-    dependsOn("extractThriftModels")
+    //dependsOn("extractThriftModels")
     executable = "java"
     args(
             "-jar", "thrifty-compiler.jar",
